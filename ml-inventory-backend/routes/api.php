@@ -3,6 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BeneficiariesController;
+use App\Http\Controllers\OrdersController;
+use App\Http\Controllers\OrderItemsController;
+use App\Http\Controllers\InventoriesController;
+use App\Http\Controllers\ReportsController;
 use App\Http\Middleware\IsAuthenticated;
 
 // Route publique d'enregistrement
@@ -50,3 +55,18 @@ Route::middleware([IsAuthenticated::class, 'role:user'])->get('/user-dashboard',
         'message' => 'Welcome to your user dashboard'
     ]);
 });
+
+// Routes for Beneficiaries
+Route::middleware([IsAuthenticated::class, 'role:admin'])->apiResource('beneficiaries', BeneficiariesController::class);
+
+// Routes for Orders
+Route::middleware([IsAuthenticated::class, 'role:admin'])->apiResource('orders', OrdersController::class);
+
+// Routes for Order Items
+Route::middleware([IsAuthenticated::class, 'role:storekeeper'])->apiResource('order-items', OrderItemsController::class);
+
+// Routes for Inventory
+Route::middleware([IsAuthenticated::class, 'role:storekeeper'])->apiResource('inventory', InventoriesController::class);
+
+// Routes for Reports
+Route::middleware([IsAuthenticated::class, 'role:admin'])->apiResource('reports', ReportsController::class);
