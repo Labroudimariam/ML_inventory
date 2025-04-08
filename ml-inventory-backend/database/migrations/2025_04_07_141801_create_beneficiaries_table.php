@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('country');
             $table->string('postal_code')->nullable();
             $table->text('additional_info')->nullable();
+            $table->integer('nombre_insemination_artificielle');
             $table->timestamps();
         });
     }

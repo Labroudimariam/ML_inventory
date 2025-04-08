@@ -30,6 +30,7 @@ class BeneficiariesController extends Controller
             'country' => 'required|string',
             'postal_code' => 'required|string',
             'additional_info' => 'nullable|string',
+            'nombre_insemination_artificielle' => 'required|integer|min:1',
         ]);
 
         $beneficiary = Beneficiary::create($validated);
@@ -51,6 +52,7 @@ class BeneficiariesController extends Controller
             'country' => 'required|string',
             'postal_code' => 'required|string',
             'additional_info' => 'nullable|string',
+            'nombre_insemination_artificielle' => 'required|integer|min:1',
         ]);
 
         $beneficiary->update($validated);
