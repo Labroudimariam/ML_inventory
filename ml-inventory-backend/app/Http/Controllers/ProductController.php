@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
 
 class ProductController extends Controller
 {
@@ -32,7 +34,7 @@ class ProductController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'warehouse' => 'required|string|max:255',
+            'warehouse_id' => 'required|string|max:255',
             'quantity' => 'required|integer',
             'unit' => 'required|string|max:50',
             'price' => 'required|numeric',
@@ -72,58 +74,56 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        DB::beginTransaction();
-        
         try {
             $product = Product::findOrFail($id);
             
-            $validated = $request->validate([
-                'name' => 'sometimes|string|max:255',
-                'category_id' => 'sometimes|exists:categories,id',
-                'warehouse' => 'sometimes|string|max:255',
-                'quantity' => 'sometimes|integer',
-                'unit' => 'sometimes|string|max:50',
-                'price' => 'sometimes|numeric',
-                'status' => 'sometimes|in:in-stock,out-of-stock,low-stock',
-                'image' => 'nullable|image|max:2048',
-            ]);
-
-            // Update each field individually
-            foreach ($validated as $field => $value) {
-                if ($field !== 'image') {
-                    $product->{$field} = $value;
-                }
+            // Manually handle FormData fields since validate() doesn't work well with FormData
+            $data = [
+                'name' => $request->input('name', $product->name),
+                'category_id' => $request->input('category_id', $product->category_id),
+                'warehouse_id' => $request->input('warehouse_id', $product->warehouse_id),
+                'quantity' => $request->input('quantity', $product->quantity),
+                'unit' => $request->input('unit', $product->unit),
+                'price' => $request->input('price', $product->price),
+                'threshold_value' => $request->input('threshold_value', $product->threshold_value),
+                'expiry_date' => $request->input('expiry_date', $product->expiry_date),
+                'status' => $request->input('status', $product->status),
+                'description' => $request->input('description', $product->description),
+            ];
+    
+            // Manual validation
+            if (empty($data['name'])) {
+                throw new \Exception("Name is required");
             }
-
-            // Handle image upload
+            // Add other validations as needed...
+    
+            // Update product
+            $product->fill($data);
+    
+            // Handle image
             if ($request->hasFile('image')) {
-                // Delete old image if exists
                 if ($product->image) {
                     Storage::disk('public')->delete($product->image);
                 }
                 $product->image = $request->file('image')->store('products', 'public');
             }
-
-            if (!$product->save()) {
-                throw new \Exception('Failed to save product');
-            }
-
-            DB::commit();
-            
+    
+            $product->save();
+    
             return response()->json([
                 'success' => true,
                 'data' => $product,
-                'changes' => $product->getChanges()
-            ], Response::HTTP_OK);
-
+                'message' => 'Product updated successfully'
+            ]);
+    
         } catch (\Exception $e) {
-            DB::rollBack();
             return response()->json([
                 'success' => false,
                 'message' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            ], 400);
         }
     }
+
 
 
     /**

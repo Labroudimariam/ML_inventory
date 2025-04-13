@@ -24,7 +24,7 @@ function App() {
         <Route path="/subadmin-dashboard" element={<SubAdminDashboard />} />
         <Route path="/storekeeper-dashboard" element={<StoreKeeperDashboard />} />
 
-        <Route path="/product/list" element={<ProductList />} />
+        <Route path="/products/list" element={<ProductList />} />
         <Route path="/product/add" element={<AddProduct />} />
         <Route path="/product/edit/:id" element={<EditProduct />} />
       </Routes>

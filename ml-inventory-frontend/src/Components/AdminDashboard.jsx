@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 const AdminDashboard = () => {
   return (
     <div>AdminDashboard
-      <Link to="/product/list">Product List</Link>
+      <Link to="/products/list">Product List</Link>
     </div>
   )
 }

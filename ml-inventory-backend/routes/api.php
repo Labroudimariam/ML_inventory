@@ -4,12 +4,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BeneficiariesController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\OrderItemsController;
 use App\Http\Controllers\InventoriesController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\InboxController;
+use App\Http\Controllers\WarehouseController;
 use App\Http\Middleware\IsAuthenticated;
 
 // Auth routes
@@ -29,6 +31,15 @@ Route::middleware([IsAuthenticated::class])->get('/profile', function (Request $
 
 // Protected routes for all authenticated users
 Route::middleware([IsAuthenticated::class])->group(function () {
+
+
+    // Categories
+    Route::get('/categories', [CategoryController::class, 'index']); // Get all categories
+    Route::post('/categories', [CategoryController::class, 'store']); // Create a new category
+    Route::get('/categories/{id}', [CategoryController::class, 'show']); // Get a single category by ID
+    Route::put('/categories/{id}', [CategoryController::class, 'update']); // Update a category
+    Route::delete('/categories/{id}', [CategoryController::class, 'destroy']); // Delete a category
+
 
     // Products
     Route::get('products', [ProductController::class, 'index']);
@@ -78,4 +89,13 @@ Route::middleware([IsAuthenticated::class])->group(function () {
     Route::get('inboxes/{id}', [InboxController::class, 'show']);
     Route::put('inboxes/{id}', [InboxController::class, 'update']);
     Route::delete('inboxes/{id}', [InboxController::class, 'destroy']);
+
+    // Warehouses
+
+    Route::get('/warehouses', [WarehouseController::class, 'index']); // Get all warehouses
+    Route::post('/warehouses', [WarehouseController::class, 'store']); // Create a new warehouse
+    Route::get('/warehouses/{id}', [WarehouseController::class, 'show']); // Get a single warehouse by ID
+    Route::put('/warehouses/{id}', [WarehouseController::class, 'update']); // Update a warehouse
+    Route::delete('/warehouses/{id}', [WarehouseController::class, 'destroy']); // Delete a warehouse
+
 });

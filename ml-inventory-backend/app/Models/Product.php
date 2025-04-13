@@ -9,21 +9,18 @@ class Product extends Model
 {
     //
     protected $fillable = [
-        'name',
-        'category_id',
-        'warehouse',
-        'quantity',
-        'unit',
-        'price',
-        'threshold_value',
-        'expiry_date',
-        'status',
-        'description',
-        'image'
+        'name', 'category_id', 'warehouse_id', 'quantity', 'unit', 
+        'price', 'threshold_value', 'expiry_date', 'status', 
+        'description', 'image'
     ];
-    public function category()
-{
-    return $this->belongsTo(Category::class);
-}
 
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class);
+    }
 }
