@@ -3,20 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
-use App\Models\Beneficiary;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class OrdersController extends Controller
 {
     public function index()
     {
-        return Order::all();
+        return Order::with(['beneficiary', 'user'])->get();
     }
 
     public function show($id)
     {
-        return Order::findOrFail($id);
+        return Order::with(['beneficiary', 'user'])->findOrFail($id);
     }
 
     public function store(Request $request)
@@ -25,9 +23,11 @@ class OrdersController extends Controller
             'beneficiary_id' => 'required|exists:beneficiaries,id',
             'user_id' => 'required|exists:users,id',
             'order_number' => 'required|string|unique:orders,order_number',
-            'type' => 'required|in:Book,Watch,Medicine,Mobile,Electric,Fashion,Other',
+            'type' => 'required|in:Semen,Liquid nitrogen,Insemination equipment,Other',
             'status' => 'required|in:Processing,Completed,Rejected,On Hold,In Transit',
-            'total_amount' => 'required|numeric',
+            'total_amount' => 'required|numeric|min:0',
+            'order_date' => 'required|date',
+            'expected_delivery_date' => 'nullable|date|after_or_equal:order_date',
             'notes' => 'nullable|string',
         ]);
 
@@ -43,9 +43,11 @@ class OrdersController extends Controller
             'beneficiary_id' => 'required|exists:beneficiaries,id',
             'user_id' => 'required|exists:users,id',
             'order_number' => 'required|string|unique:orders,order_number,' . $id,
-            'type' => 'required|in:Book,Watch,Medicine,Mobile,Electric,Fashion,Other',
+            'type' => 'required|in:Semen,Liquid nitrogen,Insemination equipment,Other',
             'status' => 'required|in:Processing,Completed,Rejected,On Hold,In Transit',
-            'total_amount' => 'required|numeric',
+            'total_amount' => 'required|numeric|min:0',
+            'order_date' => 'required|date',
+            'expected_delivery_date' => 'nullable|date|after_or_equal:order_date',
             'notes' => 'nullable|string',
         ]);
 

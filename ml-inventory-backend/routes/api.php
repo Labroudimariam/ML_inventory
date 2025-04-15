@@ -11,6 +11,7 @@ use App\Http\Controllers\OrderItemsController;
 use App\Http\Controllers\InventoriesController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\InboxController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\WarehouseController;
 use App\Http\Middleware\IsAuthenticated;
 
@@ -31,6 +32,13 @@ Route::middleware([IsAuthenticated::class])->get('/profile', function (Request $
 
 // Protected routes for all authenticated users
 Route::middleware([IsAuthenticated::class])->group(function () {
+
+    // Users
+    Route::get('users', [UserController::class, 'index']);
+    Route::post('users', [UserController::class, 'store']);
+    Route::get('users/{id}', [UserController::class, 'show']);
+    Route::put('users/{id}', [UserController::class, 'update']);
+    Route::delete('users/{id}', [UserController::class, 'destroy']);
 
 
     // Categories
@@ -87,7 +95,7 @@ Route::middleware([IsAuthenticated::class])->group(function () {
     Route::get('inboxes', [InboxController::class, 'index']);
     Route::post('inboxes', [InboxController::class, 'store']);
     Route::get('inboxes/{id}', [InboxController::class, 'show']);
-    Route::put('inboxes/{id}', [InboxController::class, 'update']);
+    Route::put('inboxes/{id}/mark-as-read', [InboxController::class, 'markAsRead']);
     Route::delete('inboxes/{id}', [InboxController::class, 'destroy']);
 
     // Warehouses

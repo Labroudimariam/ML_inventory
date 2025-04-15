@@ -49,9 +49,10 @@ const ProductList = () => {
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <table>
+        <table border={"1"}>
           <thead>
             <tr>
+              <th>Photo</th>
               <th>Name</th>
               <th>Category</th>
               <th>Price</th>
@@ -62,6 +63,15 @@ const ProductList = () => {
           <tbody>
             {products.map((product) => (
               <tr key={product.id}>
+                <td><img width={50} height={50}
+                    src={
+                      product.image
+                        ? `http://localhost:8000/storage/${product.image}`
+                        : "/unknown_product.jpeg"
+                    }
+                    alt="Profile"
+                    className="profile-img"
+                  /></td>
                 <td>{product.name}</td>
                 <td>{product.category?.name}</td>
                 <td>{product.price}</td>

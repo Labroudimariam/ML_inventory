@@ -9,19 +9,20 @@ class ReportsController extends Controller
 {
     public function index()
     {
-        return Report::all();
+        return Report::with('user')->get();
     }
-
+    
     public function show($id)
     {
-        return Report::findOrFail($id);
+        return Report::with('user')->findOrFail($id);
     }
+    
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|in:Sales,Inventory,Beneficiary,Order',
+            'type' => 'required|in:Product,Category,Inventory,Beneficiary,Order',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
             'filters' => 'nullable|json',
@@ -30,7 +31,7 @@ class ReportsController extends Controller
         ]);
 
         $report = Report::create($validated);
-        return response()->json($report, 201);
+    return response()->json(Report::with('user')->find($report->id), 201);
     }
 
     public function update(Request $request, $id)
@@ -39,7 +40,7 @@ class ReportsController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|in:Sales,Inventory,Beneficiary,Order',
+            'type' => 'required|in:Product,Category,Inventory,Beneficiary,Order',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
             'filters' => 'nullable|json',
@@ -48,7 +49,7 @@ class ReportsController extends Controller
         ]);
 
         $report->update($validated);
-        return response()->json($report);
+        return response()->json(Report::with('user')->find($id));
     }
 
     public function destroy($id)

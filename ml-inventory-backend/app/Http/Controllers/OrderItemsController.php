@@ -9,12 +9,13 @@ class OrderItemsController extends Controller
 {
     public function index()
     {
-        return OrderItem::all();
+
+        return OrderItem::with('product')->get();
     }
 
     public function show($id)
     {
-        return OrderItem::findOrFail($id);
+        return OrderItem::with('product')->findOrFail($id);
     }
 
     public function store(Request $request)
@@ -28,7 +29,8 @@ class OrderItemsController extends Controller
         ]);
 
         $orderItem = OrderItem::create($validated);
-        return response()->json($orderItem, 201);
+        
+        return response()->json(OrderItem::with('product')->find($orderItem->id), 201);
     }
 
     public function update(Request $request, $id)
@@ -44,7 +46,8 @@ class OrderItemsController extends Controller
         ]);
 
         $orderItem->update($validated);
-        return response()->json($orderItem);
+        
+        return response()->json(OrderItem::with('product')->find($id));
     }
 
     public function destroy($id)
@@ -54,4 +57,3 @@ class OrderItemsController extends Controller
         return response()->json(['message' => 'Order item deleted']);
     }
 }
-

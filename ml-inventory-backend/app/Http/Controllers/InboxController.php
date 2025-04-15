@@ -16,6 +16,37 @@ class InboxController extends Controller
             ->get();
     }
 
+    // Get a specific inbox message
+    public function show($id, Request $request)
+    {
+        $inbox = Inbox::where('id', $id)
+            ->where('user_id', $request->user()->id)
+            ->first();
+
+        if (!$inbox) {
+            return response()->json(['message' => 'Message not found'], 404);
+        }
+
+        return response()->json($inbox);
+    }
+
+
+    // Delete a specific inbox message
+    public function destroy($id, Request $request)
+    {
+        $inbox = Inbox::where('id', $id)
+            ->where('user_id', $request->user()->id)
+            ->first();
+
+        if (!$inbox) {
+            return response()->json(['message' => 'Message not found'], 404);
+        }
+
+        $inbox->delete();
+
+        return response()->json(['message' => 'Message deleted successfully']);
+    }
+
     // Mark as read
     public function markAsRead($id)
     {

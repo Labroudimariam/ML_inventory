@@ -47,7 +47,7 @@ const WarehouseList = () => {
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <table>
+        <table border={"1"}>
           <thead>
             <tr>
               <th>Name</th>

@@ -9,12 +9,12 @@ class InventoriesController extends Controller
 {
     public function index()
     {
-        return Inventory::all();
+        return Inventory::with(['product', 'user'])->get();
     }
-
+    
     public function show($id)
     {
-        return Inventory::findOrFail($id);
+        return Inventory::with(['product', 'user'])->findOrFail($id);
     }
 
     public function store(Request $request)
@@ -28,7 +28,7 @@ class InventoriesController extends Controller
         ]);
 
         $inventory = Inventory::create($validated);
-        return response()->json($inventory, 201);
+        return response()->json(Inventory::with(['product', 'user'])->find($inventory->id), 201);
     }
 
     public function update(Request $request, $id)
@@ -44,7 +44,7 @@ class InventoriesController extends Controller
         ]);
 
         $inventory->update($validated);
-        return response()->json($inventory);
+        return response()->json(Inventory::with(['product', 'user'])->find($id));
     }
 
     public function destroy($id)

@@ -9,8 +9,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-    //
-    protected $fillable = ['beneficiary_id', 'user_id', 'order_number', 'type', 'status', 'total_amount', 'notes'];
+    protected $fillable = [
+        'beneficiary_id',
+        'user_id',
+        'order_number',
+        'type',
+        'status',
+        'total_amount',
+        'order_date', 
+        'expected_delivery_date',
+        'notes'
+    ];
 
     public function beneficiary() {
         return $this->belongsTo(Beneficiary::class);

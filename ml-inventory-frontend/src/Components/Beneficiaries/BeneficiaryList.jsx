@@ -47,7 +47,7 @@ const BeneficiaryList = () => {
       {loading ? (
         <div>Loading...</div>
       ) : (
-        <table>
+        <table border={"1"}>
           <thead>
             <tr>
               <th>Name</th>
@@ -56,6 +56,7 @@ const BeneficiaryList = () => {
               <th>Gender</th>
               <th>City</th>
               <th>Country</th>
+              <th>Nombre Insemination Artificielle</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -68,6 +69,7 @@ const BeneficiaryList = () => {
                 <td>{beneficiary.gender}</td>
                 <td>{beneficiary.city}</td>
                 <td>{beneficiary.country}</td>
+                <td>{beneficiary.nombre_insemination_artificielle}</td>
                 <td>
                   <Link to={`/beneficiary/edit/${beneficiary.id}`}>Edit</Link> |{" "}
                   <button onClick={() => handleDelete(beneficiary.id)}>Delete</button>

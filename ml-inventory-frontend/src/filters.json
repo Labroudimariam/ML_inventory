@@ -1,0 +1,8 @@
+{
+    "department_id": 3,
+    "start_date": "2025-01-01",
+    "end_date": "2025-03-31",
+    "product_type": ["Nitrogen", "Seeds"],
+    "min_quantity": 10
+  }
+  
