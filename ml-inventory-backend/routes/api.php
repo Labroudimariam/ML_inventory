@@ -30,6 +30,9 @@ Route::middleware([IsAuthenticated::class])->get('/profile', function (Request $
     ]);
 });
 
+
+Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
+
 // Protected routes for all authenticated users
 Route::middleware([IsAuthenticated::class])->group(function () {
 
@@ -40,6 +43,9 @@ Route::middleware([IsAuthenticated::class])->group(function () {
     Route::put('users/{id}', [UserController::class, 'update']);
     Route::delete('users/{id}', [UserController::class, 'destroy']);
 
+    // Change Password
+    Route::put('/user/change-password', [UserController::class, 'changePassword']);
+    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
     // Categories
     Route::get('/categories', [CategoryController::class, 'index']); // Get all categories

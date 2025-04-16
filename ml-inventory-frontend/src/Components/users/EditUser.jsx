@@ -35,7 +35,7 @@ const EditUser = () => {
         setInitialUser({...response.data});
 
         if (response.data.profile_picture) {
-          setImagePreview(`/storage/${response.data.profile_picture}`);
+          setImagePreview(`http://localhost:8000/storage/${response.data.profile_picture}`);
         }
       } catch (err) {
         setError("Failed to fetch user data");

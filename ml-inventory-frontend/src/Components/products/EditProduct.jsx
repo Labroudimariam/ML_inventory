@@ -42,7 +42,7 @@ const EditProduct = () => {
         setWarehouses(warehousesRes.data);
 
         if (productRes.data.image) {
-          setImagePreview(`/storage/${productRes.data.image}`);
+          setImagePreview(`http://localhost:8000/storage/${productRes.data.image}`);
         }
       } catch (err) {
         setError("Failed to fetch product data");

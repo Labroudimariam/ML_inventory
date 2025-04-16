@@ -42,6 +42,8 @@ import ViewInbox from "./Components/inboxes/ViewInbox";
 import Profile from "./Components/settings/Profile";
 import UpdateProfileForm from "./Components/settings/UpdateProfileForm";
 import ChangePasswordForm from "./Components/settings/ChangePasswordForm";
+import Logout from "./Components/Logout";
+import ResetPassword from "./Components/ResetPassword";
 
 function App() {
   return (
@@ -50,6 +52,11 @@ function App() {
         {/* Default route redirects to /login */}
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/logout" element={<Logout />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+
+
+        {/* Dashboard routes */}
         <Route path="/admin-dashboard" element={<AdminDashboard />} />
         <Route path="/subadmin-dashboard" element={<SubAdminDashboard />} />
         <Route path="/storekeeper-dashboard" element={<StoreKeeperDashboard />} />

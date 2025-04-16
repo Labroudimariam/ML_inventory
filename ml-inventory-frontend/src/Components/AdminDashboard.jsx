@@ -16,6 +16,7 @@ const AdminDashboard = () => {
       <Link to="/inventory/list">Inventory List</Link><br />
       <Link to="/reports/list">Report List</Link><br />
       <Link to="/inboxes/list">Inbox List</Link><br />
+      <Link to="/logout">Logout</Link><br />
     </div>
   )
 }
