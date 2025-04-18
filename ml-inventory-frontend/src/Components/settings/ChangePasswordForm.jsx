@@ -152,7 +152,7 @@ const ChangePasswordForm = () => {
           </button>
           <button
             type="button"
-            onClick={() => navigate('/profile')}
+            onClick={() => navigate('/settings')}
             className="btn btn-secondary"
             disabled={loading}
           >

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from '../../axios';
+import './profile.css';
+import Navbar from '../navbar/Navbar';
 
 const Profile = () => {
   const [user, setUser] = useState(null);
@@ -9,17 +11,23 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUserProfile = async () => {
+      const cachedProfile = localStorage.getItem('cachedProfile');
+      if (cachedProfile) {
+        setUser(JSON.parse(cachedProfile));
+        setLoading(false);
+        return;
+      }
       try {
         const response = await axios.get('/profile');
-        setUser(response.data.user);
+        const userData = response.data.user;
+        localStorage.setItem('cachedProfile', JSON.stringify(userData));
+        setUser(userData);
       } catch (error) {
         setMessage('Failed to fetch profile data');
-        console.error(error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchUserProfile();
   }, []);
 
@@ -35,6 +43,7 @@ const Profile = () => {
     <div className="profile-container">
       <div className="profile-header">
         <h1>User Profile</h1>
+        <Navbar />
       </div>
 
       {message && <div className="alert">{message}</div>}

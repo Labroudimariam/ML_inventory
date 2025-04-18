@@ -1,0 +1,101 @@
+/* Sidebar - Light Mode */
+.sidebar {
+  width: 200px;
+  height: 100vh;
+  background-color: #ffffff;
+  padding: 1.5rem 1rem;
+  color: #202224;
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow-y: auto;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Dark Mode */
+html.dark .sidebar,
+body.dark-mode .sidebar {
+  color: #f3f4f6;
+}
+
+/* Nav Links */
+.nav-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.nav-links a {
+  color: #202224;
+  text-decoration: none;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* Dark Mode Links */
+html.dark .nav-links a,
+body.dark-mode .nav-links a {
+  color: #f3f4f6;
+}
+
+html.dark .nav-links a:hover,
+body.dark-mode .nav-links a:hover {
+  color: #ffffff;
+}
+
+html.dark .nav-links a.active,
+body.dark-mode .nav-links a.active {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+/* Hover */
+.nav-links a:hover {
+  background-color: #f4f6f8;
+  color: #202224;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transform: translateX(2px);
+}
+
+/* Active link */
+.nav-links a.active {
+  background-color: #4880FF;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Logout specific */
+.nav-links .logout {
+  color: #f87171;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+.nav-links .logout:hover {
+  background-color: #7f1d1d;
+  color: #ffffff;
+}
+
+/* Dark Mode - Logout Link */
+html.dark .nav-links .logout,
+body.dark-mode .nav-links .logout {
+  color: #fca5a5;
+}
+
+html.dark .nav-links .logout:hover,
+body.dark-mode .nav-links .logout:hover {
+  background-color: #dc2626;
+  color: #ffffff;
+}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios"; 
 import { Link } from "react-router-dom";
+import Navbar from "../navbar/Navbar";
 
 const ReportList = () => {
   const [reports, setReports] = useState([]);
@@ -47,6 +48,7 @@ const ReportList = () => {
   return (
     <div className="report-list">
       <h2>Reports</h2>
+      <Navbar />
       {error && <div className="error-message">{error}</div>}
       {loading ? (
         <div>Loading...</div>

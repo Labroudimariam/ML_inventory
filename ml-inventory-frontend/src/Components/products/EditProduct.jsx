@@ -10,7 +10,7 @@ const EditProduct = () => {
     category_id: "",
     warehouse_id: "",
     quantity: 0,
-    unit: "",
+    unit: "", 
     price: 0,
     threshold_value: 0,
     expiry_date: "",
@@ -82,7 +82,7 @@ const EditProduct = () => {
 
     // Validate required fields
     if (!product.name || !product.category_id || !product.warehouse_id) {
-      setError("Name, category and warehouse are required");
+      setError("Name, category, and warehouse are required");
       setLoading(false);
       return;
     }
@@ -227,14 +227,20 @@ const EditProduct = () => {
 
               <div className="col-md-6">
                 <label className="form-label">Unit*</label>
-                <input
-                  type="text"
-                  className="form-control"
+                <select
+                  className="form-select"
                   name="unit"
                   value={product.unit}
                   onChange={handleChange}
                   required
-                />
+                >
+                  <option value="">Select Unit</option>
+                  <option value="kg">Kilogram (kg)</option>
+                  <option value="ltr">Liter (ltr)</option>
+                  <option value="pcs">Pieces (pcs)</option>
+                  <option value="box">Gram (g)</option>
+                  <option value="bag">Milliliter (ml)</option>
+                </select>
               </div>
 
               <div className="col-md-6">
@@ -327,10 +333,7 @@ const EditProduct = () => {
                   disabled={loading}
                 >
                   {loading ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                      Updating...
-                    </>
+                    <><span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Updating...</>
                   ) : (
                     "Update Product"
                   )}

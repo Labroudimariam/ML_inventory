@@ -61,7 +61,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
-        $product = Product::with('category')->findOrFail($id);
+        $product = Product::with(['category', 'warehouse'])->findOrFail($id);
         return response()->json($product, Response::HTTP_OK);
     }
 

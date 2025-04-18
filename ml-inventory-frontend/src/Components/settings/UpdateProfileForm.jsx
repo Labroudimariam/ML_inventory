@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../axios';
+import './updateProfileForm.css';
 
 const UpdateProfileForm = () => {
   const navigate = useNavigate();
@@ -292,7 +293,7 @@ const UpdateProfileForm = () => {
                 <button
                   type="button"
                   className="btn btn-outline-secondary ms-2"
-                  onClick={() => navigate('/profile')}
+                  onClick={() => navigate('/settings')}
                 >
                   Cancel
                 </button>

@@ -1,0 +1,112 @@
+/* Container and Card */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    background-color: #ffffff;
+  }
+  
+  .card-header {
+    background-color: transparent;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  
+  .card-header h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  /* Alerts */
+  .alert {
+    border-radius: 10px;
+    padding: 1rem;
+    font-size: 0.95rem;
+  }
+  
+  .alert-success {
+    background-color: #e6f5ea;
+    color: #2e7d32;
+    border: 1px solid #c4e3cb;
+  }
+  
+  .alert-danger {
+    background-color: #fcebea;
+    color: #c0392b;
+    border: 1px solid #f5c6cb;
+  }
+  
+  .btn-close {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    float: right;
+  }
+  
+  /* Form Labels and Inputs */
+  .form-label {
+    font-weight: 500;
+    color: #333;
+  }
+  
+  .form-control {
+    border-radius: 8px;
+    border: 1px solid #dcdcdc;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.95rem;
+  }
+  
+  .form-control:focus {
+    border-color: #3d63ea;
+    box-shadow: 0 0 0 0.15rem rgba(61, 99, 234, 0.25);
+  }
+  
+  /* Image Preview */
+  .img-thumbnail {
+    border-radius: 50%;
+    object-fit: cover;
+    max-height: 180px;
+  }
+  
+  /* Buttons */
+  .btn-primary {
+    background-color: #3d63ea;
+    border-color: #3d63ea;
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+  }
+  
+  .btn-primary:hover {
+    background-color: #2e4acb;
+    border-color: #2e4acb;
+  }
+  
+  .btn-outline-secondary {
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+  }
+  
+  /* Spinner */
+  .spinner-border {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  /* Margin between buttons */
+  .ms-2 {
+    margin-left: 0.75rem !important;
+  }
+  
+  /* Loading Message */
+  .text-center.my-5 {
+    font-size: 1.2rem;
+    color: #666;
+  }
+  

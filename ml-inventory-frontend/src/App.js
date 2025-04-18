@@ -4,6 +4,8 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import "./App.css";
+// Importing components
 import AdminDashboard from "./Components/AdminDashboard";
 import Login from "./Components/Login";
 import StoreKeeperDashboard from "./Components/StoreKeeperDashboard";
@@ -44,6 +46,7 @@ import UpdateProfileForm from "./Components/settings/UpdateProfileForm";
 import ChangePasswordForm from "./Components/settings/ChangePasswordForm";
 import Logout from "./Components/Logout";
 import ResetPassword from "./Components/ResetPassword";
+import ProductDetails from "./Components/products/ProductDetails";
 
 function App() {
   return (
@@ -62,7 +65,7 @@ function App() {
         <Route path="/storekeeper-dashboard" element={<StoreKeeperDashboard />} />
 
         {/* Profile routes */}
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/settings" element={<Profile />} />
         <Route path="/profile/edit" element={<UpdateProfileForm />} />
         <Route path="/profile/change-password" element={<ChangePasswordForm />} />
 
@@ -76,6 +79,8 @@ function App() {
         <Route path="/products/list" element={<ProductList />} />
         <Route path="/product/add" element={<AddProduct />} />
         <Route path="/product/edit/:id" element={<EditProduct />} />
+        <Route path="/product/details/:id" element={<ProductDetails />} />
+
 
         {/* Warehouses routes */}
         <Route path="/warehouses/list" element={<WarehouseList />} />

@@ -1,24 +1,32 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react';
+import Navbar from './navbar/Navbar';
+import NavbarTop from './navbar/NavbarTop'; 
+import './adminDashboard.css';
 
 const AdminDashboard = () => {
-  return (
-    <div>
-      <h1>Admin Dashboard</h1><br />
-      <Link to="/profile">Profile</Link><br />
-      <Link to="/users/list">User List</Link><br />
-      <Link to="/products/list">Product List</Link><br />
-      <Link to="/beneficiaries/list">Beneficiary List</Link><br />
-      <Link to="/categories/list">Category List</Link><br />
-      <Link to="/warehouses/list">Warehouse List</Link><br />
-      <Link to="/orders/list">Order List</Link><br />
-      <Link to="/order-items/list">Order Item List</Link><br />
-      <Link to="/inventory/list">Inventory List</Link><br />
-      <Link to="/reports/list">Report List</Link><br />
-      <Link to="/inboxes/list">Inbox List</Link><br />
-      <Link to="/logout">Logout</Link><br />
-    </div>
-  )
-}
+  const [isDarkMode, setIsDarkMode] = useState(
+    () => localStorage.getItem('darkMode') === 'true'
+  );
 
-export default AdminDashboard
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDarkMode);
+    localStorage.setItem('darkMode', isDarkMode);
+  }, [isDarkMode]);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode(prev => !prev);
+  };
+
+  return (
+    <div className={`admin-dashboard`}>
+      <NavbarTop isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
+      <h1>Admin Dashboard</h1>
+      <Navbar />
+      <div className="dashboard-content">
+        {/* Your dashboard content components */}
+      </div>
+    </div>
+  );
+};
+
+export default AdminDashboard;

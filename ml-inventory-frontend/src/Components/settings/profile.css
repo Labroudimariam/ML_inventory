@@ -1,0 +1,134 @@
+.profile-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  .profile-header h1 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #1e1e1e;
+  }
+  
+  .profile-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .profile-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+  }
+  
+  .profile-actions .btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-primary {
+    background-color: #3d63ea;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #2e4acb;
+  }
+  
+  .btn-secondary {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #e2e2e2;
+  }
+  
+  .profile-info {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  
+  .profile-picture img {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid #e2e8f0;
+  }
+  
+  .profile-details {
+    flex-grow: 1;
+  }
+  
+  .profile-details h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  .profile-details p {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+    color: #4a4a4a;
+  }
+  
+  .profile-details span {
+    font-weight: 500;
+    color: #1f1f1f;
+  }
+  
+  .additional-info {
+    margin-top: 1rem;
+  }
+  
+  .additional-info h3 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .info-grid {
+    display: flex;
+    gap: 3rem;
+  }
+  
+  .info-grid p {
+    margin: 0.4rem 0;
+    font-size: 0.95rem;
+    color: #444;
+  }
+  
+  .info-grid span {
+    font-weight: 500;
+    color: #222;
+  }
+  
+  .alert {
+    background-color: #ffe0e0;
+    padding: 1rem;
+    color: #d8000c;
+    border-left: 4px solid #d8000c;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+  }
+  
+  .loading,
+  .error {
+    text-align: center;
+    font-size: 1.2rem;
+    margin-top: 2rem;
+  }
+  

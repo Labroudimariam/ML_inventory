@@ -1,0 +1,28 @@
+.product-details {
+    padding: 20px;
+  }
+  
+  .back-link {
+    margin-bottom: 10px;
+    display: inline-block;
+    color: #007bff;
+  }
+  
+  .details-card {
+    display: flex;
+    gap: 20px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .details-image {
+    width: 200px;
+    height: auto;
+    border-radius: 8px;
+  }
+  
+  .details-info p {
+    margin: 8px 0;
+  }
+  

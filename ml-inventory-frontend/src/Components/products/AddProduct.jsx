@@ -8,7 +8,7 @@ const AddProduct = () => {
     category_id: "",
     warehouse_id: "",
     quantity: 0,
-    unit: "",
+    unit: "", 
     price: 0,
     threshold_value: 0,
     expiry_date: "",
@@ -169,13 +169,19 @@ const AddProduct = () => {
 
         <div className="form-group">
           <label>Unit</label>
-          <input
-            type="text"
+          <select
             name="unit"
             value={formData.unit}
             onChange={handleChange}
             required
-          />
+          >
+            <option value="">Select Unit</option>
+            <option value="kg">Kilogram (kg)</option>
+            <option value="ltr">Liter (ltr)</option>
+            <option value="pcs">Pieces (pcs)</option>
+            <option value="box">Gram (g)</option>
+            <option value="bag">Milliliter (ml)</option>
+          </select>
         </div>
 
         <div className="form-group">

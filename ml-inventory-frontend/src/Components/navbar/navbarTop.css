@@ -1,0 +1,73 @@
+.navbar-top {
+    width: 100%;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .navbar-top.dark {
+    background-color: #1f2937;
+    color: white;
+  }
+  
+  .navbar-search {
+    position: relative;
+    width: 33%;
+  }
+  
+  .navbar-search input {
+    width: 100%;
+    padding: 8px 12px 8px 36px;
+    border-radius: 8px;
+    background-color: #f1f5f9;
+    border: none;
+    color: #374151;
+    font-size: 14px;
+  }
+  
+  .navbar-search input:focus {
+    outline: 2px solid #3b82f6;
+  }
+  
+  .navbar-search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+  }
+  
+  .navbar-icons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .navbar-icons button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .navbar-icons .notification-dot {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background-color: #ef4444;
+    border-radius: 50%;
+  }
+  
+  .navbar-profile-img {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #d1d5db;
+  }
+  

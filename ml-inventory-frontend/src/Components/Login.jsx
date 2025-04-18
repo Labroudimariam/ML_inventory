@@ -3,6 +3,7 @@ import axios from "../axios";
 import { useNavigate } from "react-router-dom";
 import { FiMail, FiLock, FiArrowLeft, FiAlertCircle } from "react-icons/fi";
 import './login.css';
+import LoadingSpinner from "./loading/Loading";
 
 const Login = () => {
   const [email, setEmail] = useState("admin@example.com");
@@ -98,19 +99,21 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="login-container">
-        {!showForgotPassword ? (
+        {loading ? (
+          <LoadingSpinner />
+        ) : !showForgotPassword ? (
           <>
             <div className="form-header">
               <h2>Sign in to your account</h2>
               <p>Welcome back! Please enter your details</p>
             </div>
-            
+  
             {error && (
               <div className="message error">
                 <FiAlertCircle /> {error}
               </div>
             )}
-            
+  
             <form className="login-form" onSubmit={handleLogin}>
               <div className="form-group">
                 <label htmlFor="email">Email address</label>
@@ -128,7 +131,7 @@ const Login = () => {
                   />
                 </div>
               </div>
-              
+  
               <div className="form-group">
                 <label htmlFor="password">Password</label>
                 <div className="input-with-icon">
@@ -144,9 +147,9 @@ const Login = () => {
                     placeholder="••••••••"
                   />
                 </div>
-                <a 
-                  href="#" 
-                  className="forgot-password" 
+                <a
+                  href="#"
+                  className="forgot-password"
                   onClick={(e) => {
                     e.preventDefault();
                     setShowForgotPassword(true);
@@ -155,24 +158,14 @@ const Login = () => {
                   Forgot password?
                 </a>
               </div>
-              
-              <button 
-                type="submit" 
-                className={`login-btn ${loading ? 'loading' : ''}`}
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Signing in...
-                  </>
-                ) : "Sign in"}
+  
+              <button type="submit" className="login-btn">
+                Sign in
               </button>
             </form>
           </>
+        ) : forgotLoading ? (
+          <LoadingSpinner />
         ) : (
           <div className="login-form">
             <button
@@ -181,22 +174,24 @@ const Login = () => {
             >
               <FiArrowLeft className="icon" /> Back to login
             </button>
-            
+  
             <div className="form-header">
               <h2>Reset your password</h2>
               <p>Enter your email and we'll send you a link to reset your password.</p>
             </div>
-            
+  
             {forgotMessage && (
-              <div className={`message ${
-                forgotMessage.includes("sent") || forgotMessage.includes("success") 
-                  ? "success" 
-                  : "error"
-              }`}>
+              <div
+                className={`message ${
+                  forgotMessage.includes("sent") || forgotMessage.includes("success")
+                    ? "success"
+                    : "error"
+                }`}
+              >
                 <FiAlertCircle /> {forgotMessage}
               </div>
             )}
-            
+  
             <form onSubmit={handleForgotPassword}>
               <div className="form-group">
                 <label htmlFor="forgot-email">Email address</label>
@@ -214,21 +209,9 @@ const Login = () => {
                   />
                 </div>
               </div>
-
-              <button 
-                type="submit" 
-                className={`login-btn ${forgotLoading ? 'loading' : ''}`}
-                disabled={forgotLoading}
-              >
-                {forgotLoading ? (
-                  <>
-                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Sending...
-                  </>
-                ) : "Send reset link"}
+  
+              <button type="submit" className="login-btn">
+                Send reset link
               </button>
             </form>
           </div>
@@ -236,6 +219,7 @@ const Login = () => {
       </div>
     </div>
   );
+  
 };
 
 export default Login;
