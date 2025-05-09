@@ -1,10 +1,13 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import NavbarTop from './navbar/NavbarTop'
+import Navbar from './navbar/Navbar'
 
 const SubAdminDashboard = () => {
   return (
-    <div>SubAdminDashboard
-      <Link to="/profile">Profile</Link>
+    <div className='subadmin-dashboard'>
+      <NavbarTop />
+      <Navbar />
+      <h1>SubAdmin Dashboard</h1>
     </div>
   )
 }

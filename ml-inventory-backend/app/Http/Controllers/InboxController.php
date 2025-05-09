@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Inbox;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class InboxController extends Controller
 {
@@ -30,7 +29,6 @@ class InboxController extends Controller
         return response()->json($inbox);
     }
 
-
     // Delete a specific inbox message
     public function destroy($id, Request $request)
     {
@@ -47,10 +45,17 @@ class InboxController extends Controller
         return response()->json(['message' => 'Message deleted successfully']);
     }
 
-    // Mark as read
-    public function markAsRead($id)
+    // Mark a message as read
+    public function markAsRead($id, Request $request)
     {
-        $inbox = Inbox::findOrFail($id);
+        $inbox = Inbox::where('id', $id)
+            ->where('user_id', $request->user()->id)
+            ->first();
+
+        if (!$inbox) {
+            return response()->json(['message' => 'Message not found or unauthorized'], 404);
+        }
+
         $inbox->read_at = now();
         $inbox->save();
 
@@ -60,12 +65,17 @@ class InboxController extends Controller
     // Store a new inbox message
     public function store(Request $request)
     {
-        $inbox = Inbox::create($request->only([
-            'user_id',
-            'sender_email',
-            'subject',
-            'message',
-        ]));
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'sender_email' => 'required|email',
+            'subject' => 'nullable|string|max:255',
+            'message' => 'required|string',
+            'read_at' => 'nullable|date',
+            'is_important' => 'boolean',
+
+        ]);
+
+        $inbox = Inbox::create($validated);
 
         return response()->json($inbox, 201);
     }

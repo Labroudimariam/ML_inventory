@@ -1,0 +1,113 @@
+.alert-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  animation: slideIn 0.3s ease-out;
+}
+
+.alert {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 320px;
+  min-height: 70px;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.alert.success {
+  background: linear-gradient(135deg, #4CAF50, #66BB6A);
+  border-left: 5px solid #2E7D32;
+}
+
+.alert.error {
+  background: linear-gradient(135deg, #F44336, #EF5350);
+  border-left: 5px solid #C62828;
+}
+
+.alert:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.alert-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-grow: 1;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.alert-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.text-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.alert-title {
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0 0 4px 0;
+}
+
+.alert-message {
+  font-size: 14px;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: 8px;
+  color: white;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.close-btn:hover {
+  opacity: 1;
+}
+
+.close-icon {
+  width: 20px;
+  height: 20px;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .alert-container {
+    width: 90%;
+    left: 5%;
+    right: auto;
+  }
+  
+  .alert {
+    width: 100%;
+  }
+}

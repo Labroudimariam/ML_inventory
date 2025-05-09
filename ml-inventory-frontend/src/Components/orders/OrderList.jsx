@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import { Link } from "react-router-dom";
 import Navbar from "../navbar/Navbar";
+import NavbarTop from "../navbar/NavbarTop";
 
 const OrderList = () => {
   const [orders, setOrders] = useState([]);
@@ -43,8 +44,9 @@ const OrderList = () => {
 
   return (
     <div className="order-list">
-      <h2>Orders</h2>
+      <NavbarTop />
       <Navbar />
+      <h2>Orders</h2>
       {error && <div className="error-message">{error}</div>}
       {loading ? (
         <div>Loading...</div>

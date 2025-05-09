@@ -11,13 +11,12 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignId('beneficiary_id')->constrained()->onDelete('cascade');
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
             $table->string('order_number')->unique();
             $table->enum('type', ['Semen', 'Liquid nitrogen', 'Insemination equipment', 'Other']);
-            $table->enum('status', ['Processing', 'Completed', 'Rejected', 'On Hold', 'In Transit'])->default('Processing');
-            $table->decimal('total_amount', 10, 2);
+            $table->enum('status', ['Pending', 'Approved', 'Processing', 'Completed', 'Rejected'])->default('Pending');
+            $table->decimal('total_quantity', 10, 2)->default(0);
             $table->date('order_date')->default(now());
-            $table->date('expected_delivery_date')->nullable();
             $table->text('notes')->nullable();
             $table->timestamps();
         });

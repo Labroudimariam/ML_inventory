@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import { useNavigate, useParams } from "react-router-dom";
+import NavbarTop from "../navbar/NavbarTop";
+import Navbar from "../navbar/Navbar";
 
 const EditUser = () => {
   const { id } = useParams();
@@ -9,7 +11,9 @@ const EditUser = () => {
     name: "",
     email: "",
     username: "",
-    password: "",
+    phone: "",
+    cin: "",
+    gender: "",
     date_of_birth: "",
     address: "",
     permanent_address: "",
@@ -17,7 +21,11 @@ const EditUser = () => {
     country: "",
     postal_code: "",
     role: "storekeeper",
-    profile_picture: null
+    is_driver: false,
+    driver_license_number: "",
+    vehicle_type: "",
+    vehicle_registration: "",
+    profile_picture: null,
   });
   const [initialUser, setInitialUser] = useState(null);
   const [error, setError] = useState("");
@@ -30,12 +38,14 @@ const EditUser = () => {
       try {
         setLoading(true);
         const response = await axios.get(`/users/${id}`);
-        
+
         setUser(response.data);
-        setInitialUser({...response.data});
+        setInitialUser({ ...response.data });
 
         if (response.data.profile_picture) {
-          setImagePreview(`http://localhost:8000/storage/${response.data.profile_picture}`);
+          setImagePreview(
+            `http://localhost:8000/storage/${response.data.profile_picture}`
+          );
         }
       } catch (err) {
         setError("Failed to fetch user data");
@@ -44,24 +54,24 @@ const EditUser = () => {
         setLoading(false);
       }
     };
-    
+
     fetchData();
   }, [id]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUser(prev => ({
+    const { name, value, type, checked } = e.target;
+    setUser((prev) => ({
       ...prev,
-      [name]: value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setUser(prev => ({
+      setUser((prev) => ({
         ...prev,
-        profile_picture: file
+        profile_picture: file,
       }));
       setImagePreview(URL.createObjectURL(file));
     }
@@ -74,33 +84,37 @@ const EditUser = () => {
     setSuccess("");
 
     const formData = new FormData();
-    formData.append('_method', 'PUT');
-    formData.append('name', user.name);
-    formData.append('email', user.email);
-    formData.append('username', user.username);
-    if (user.password) {
-      formData.append('password', user.password);
-    }
-    formData.append('date_of_birth', user.date_of_birth);
-    formData.append('address', user.address);
-    formData.append('permanent_address', user.permanent_address || '');
-    formData.append('city', user.city);
-    formData.append('country', user.country);
-    formData.append('postal_code', user.postal_code || '');
-    formData.append('role', user.role);
-    
-    if (user.profile_picture && typeof user.profile_picture !== 'string') {
-      formData.append('profile_picture', user.profile_picture);
+    formData.append("_method", "PUT");
+    formData.append("name", user.name);
+    formData.append("email", user.email);
+    formData.append("username", user.username);
+    formData.append("phone", user.phone);
+    formData.append("cin", user.cin);
+    formData.append("gender", user.gender || "");
+    formData.append("date_of_birth", user.date_of_birth);
+    formData.append("address", user.address);
+    formData.append("permanent_address", user.permanent_address || "");
+    formData.append("city", user.city);
+    formData.append("country", user.country);
+    formData.append("postal_code", user.postal_code || "");
+    formData.append("role", user.role);
+    formData.append("is_driver", user.is_driver);
+    formData.append("driver_license_number", user.driver_license_number || "");
+    formData.append("vehicle_type", user.vehicle_type || "");
+    formData.append("vehicle_registration", user.vehicle_registration || "");
+
+    if (user.profile_picture && typeof user.profile_picture !== "string") {
+      formData.append("profile_picture", user.profile_picture);
     }
 
     try {
       const response = await axios.post(`/users/${id}`, formData, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
       });
-      
+
       if (response.data.success) {
         setSuccess("User updated successfully!");
         setTimeout(() => navigate("/users/list"), 1500);
@@ -110,7 +124,9 @@ const EditUser = () => {
     } catch (err) {
       console.error("Update error:", err);
       if (err.response?.data?.errors) {
-        const errorMsg = Object.values(err.response.data.errors).flat().join(', ');
+        const errorMsg = Object.values(err.response.data.errors)
+          .flat()
+          .join(", ");
         setError(errorMsg);
       } else {
         setError(err.response?.data?.message || "Failed to update user");
@@ -126,6 +142,8 @@ const EditUser = () => {
 
   return (
     <div className="container mt-4">
+      <NavbarTop />
+      <Navbar />
       <div className="card">
         <div className="card-header">
           <h2 className="mb-0">Edit User</h2>
@@ -134,15 +152,19 @@ const EditUser = () => {
           {error && (
             <div className="alert alert-danger alert-dismissible fade show">
               {error}
-              <button type="button" className="btn-close" onClick={() => setError("")}></button>
+              <button
+                type="button"
+                className="btn-close"
+                onClick={() => setError("")}
+              ></button>
             </div>
           )}
           {success && (
             <div className="alert alert-success alert-dismissible fade show">
               {success}
-              <button 
-                type="button" 
-                className="btn-close" 
+              <button
+                type="button"
+                className="btn-close"
                 onClick={() => {
                   setSuccess("");
                   navigate("/users/list");
@@ -190,14 +212,42 @@ const EditUser = () => {
               </div>
 
               <div className="col-md-6">
-                <label className="form-label">Password (leave blank to keep current)</label>
+                <label className="form-label">Phone*</label>
                 <input
-                  type="password"
+                  type="text"
                   className="form-control"
-                  name="password"
-                  value={user.password}
+                  name="phone"
+                  value={user.phone}
                   onChange={handleChange}
+                  required
                 />
+              </div>
+
+              <div className="col-md-6">
+                <label className="form-label">CIN*</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  name="cin"
+                  value={user.cin}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+
+              <div className="col-md-6">
+                <label className="form-label">Gender</label>
+                <select
+                  className="form-select"
+                  name="gender"
+                  value={user.gender}
+                  onChange={handleChange}
+                >
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
               </div>
 
               <div className="col-md-6">
@@ -272,28 +322,82 @@ const EditUser = () => {
 
               <div className="col-md-6">
                 <label className="form-label">Role*</label>
-                <select 
+                <select
                   className="form-select"
-                  name="role" 
-                  value={user.role} 
+                  name="role"
+                  value={user.role}
                   onChange={handleChange}
                   required
                 >
                   <option value="admin">Admin</option>
                   <option value="subadmin">Sub Admin</option>
                   <option value="storekeeper">Storekeeper</option>
+                  <option value="driver">Driver</option>
                 </select>
               </div>
+
+              <div className="col-md-6">
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    name="is_driver"
+                    checked={user.is_driver}
+                    onChange={handleChange}
+                    id="isDriverCheck"
+                  />
+                  <label className="form-check-label" htmlFor="isDriverCheck">
+                    Is Driver
+                  </label>
+                </div>
+              </div>
+
+              {user.is_driver && (
+                <>
+                  <div className="col-md-6">
+                    <label className="form-label">Driver License Number</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="driver_license_number"
+                      value={user.driver_license_number}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="col-md-6">
+                    <label className="form-label">Vehicle Type</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="vehicle_type"
+                      value={user.vehicle_type}
+                      onChange={handleChange}
+                    />
+                  </div>
+
+                  <div className="col-md-6">
+                    <label className="form-label">Vehicle Registration</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      name="vehicle_registration"
+                      value={user.vehicle_registration}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </>
+              )}
 
               <div className="col-12">
                 <label className="form-label">Profile Picture</label>
                 {imagePreview && (
                   <div className="mb-3">
-                    <img 
-                      src={imagePreview} 
-                      alt="Profile preview" 
-                      className="img-thumbnail" 
-                      style={{ maxWidth: '200px' }} 
+                    <img
+                      src={imagePreview}
+                      alt="Profile preview"
+                      className="img-thumbnail"
+                      style={{ maxWidth: "200px" }}
                     />
                   </div>
                 )}
@@ -307,14 +411,18 @@ const EditUser = () => {
               </div>
 
               <div className="col-12">
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   className="btn btn-primary"
                   disabled={loading}
                 >
                   {loading ? (
                     <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                        aria-hidden="true"
+                      ></span>
                       Updating...
                     </>
                   ) : (

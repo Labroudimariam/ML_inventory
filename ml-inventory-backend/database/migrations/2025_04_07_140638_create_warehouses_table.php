@@ -15,9 +15,13 @@ class CreateWarehousesTable extends Migration
     {
         Schema::create('warehouses', function (Blueprint $table) {
             $table->id(); 
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null'); // Storekeeper
             $table->string('name'); 
             $table->string('location')->nullable(); 
             $table->text('description')->nullable(); 
+            $table->integer('capacity')->nullable();
+            $table->integer('current_stock')->nullable();
+
             $table->timestamps(); 
         });
     }

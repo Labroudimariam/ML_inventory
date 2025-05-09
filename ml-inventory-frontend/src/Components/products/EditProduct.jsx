@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import { useNavigate, useParams } from "react-router-dom";
+import "./productForm.css";
+import NavbarTop from "../navbar/NavbarTop";
+import Navbar from "../navbar/Navbar";
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -10,7 +13,7 @@ const EditProduct = () => {
     category_id: "",
     warehouse_id: "",
     quantity: 0,
-    unit: "", 
+    unit: "pcs",
     price: 0,
     threshold_value: 0,
     expiry_date: "",
@@ -18,7 +21,7 @@ const EditProduct = () => {
     description: "",
     image: null
   });
-  const [initialProduct, setInitialProduct] = useState(null);
+  const [originalImage, setOriginalImage] = useState("");
   const [categories, setCategories] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [error, setError] = useState("");
@@ -37,21 +40,21 @@ const EditProduct = () => {
         ]);
 
         setProduct(productRes.data);
-        setInitialProduct({...productRes.data});
+        setOriginalImage(productRes.data.image || "");
         setCategories(categoriesRes.data);
         setWarehouses(warehousesRes.data);
 
-        if (productRes.data.image) {
-          setImagePreview(`http://localhost:8000/storage/${productRes.data.image}`);
+        if (productRes.data.image_url) {
+          setImagePreview(productRes.data.image_url);
         }
+        
       } catch (err) {
-        setError("Failed to fetch product data");
-        console.error("Fetch error:", err);
+        setError("Failed to load product data");
       } finally {
         setLoading(false);
       }
     };
-    
+
     fetchData();
   }, [id]);
 
@@ -61,15 +64,24 @@ const EditProduct = () => {
       ...prev,
       [name]: value
     }));
+
+    // Auto-update status based on quantity
+    if (name === "quantity") {
+      const quantity = parseInt(value) || 0;
+      let status = "in-stock";
+      if (quantity <= 0) {
+        status = "out-of-stock";
+      } else if (quantity < product.threshold_value) {
+        status = "low-stock";
+      }
+      setProduct(prev => ({ ...prev, status }));
+    }
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setProduct(prev => ({
-        ...prev,
-        image: file
-      }));
+      setProduct(prev => ({ ...prev, image: file }));
       setImagePreview(URL.createObjectURL(file));
     }
   };
@@ -80,276 +92,221 @@ const EditProduct = () => {
     setError("");
     setSuccess("");
 
-    // Validate required fields
-    if (!product.name || !product.category_id || !product.warehouse_id) {
-      setError("Name, category, and warehouse are required");
-      setLoading(false);
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('_method', 'PUT');
-    formData.append('name', product.name);
-    formData.append('category_id', product.category_id);
-    formData.append('warehouse_id', product.warehouse_id);
-    formData.append('quantity', product.quantity);
-    formData.append('unit', product.unit);
-    formData.append('price', product.price);
-    formData.append('threshold_value', product.threshold_value);
-    formData.append('expiry_date', product.expiry_date);
-    formData.append('status', product.status);
-    formData.append('description', product.description);
-    
-    if (product.image && typeof product.image !== 'string') {
-      formData.append('image', product.image);
-    }
-
     try {
-      const response = await axios.post(`/products/${id}`, formData, {
+      const data = new FormData();
+      data.append("_method", "PUT");
+
+      for (const key in product) {
+  if (key === "image") {
+    if (product.image instanceof File) {
+      data.append("image", product.image);
+    }
+  } else if (product[key] !== null && product[key] !== "") {
+    data.append(key, product[key]);
+  }
+}
+
+
+      const response = await axios.post(`/products/${id}`, data, {
         headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
+          "Content-Type": "multipart/form-data"
         }
       });
-      
-      if (response.data.success) {
-        setSuccess("Product updated successfully!");
-        setTimeout(() => navigate("/products/list"), 1500);
-      } else {
-        setError(response.data.message || "Update failed");
-      }
+
+      setSuccess("Product updated successfully!");
+      setTimeout(() => navigate("/products/list"), 2000);
     } catch (err) {
-      console.error("Update error:", err);
-      if (err.response?.data?.errors) {
-        const errorMsg = Object.values(err.response.data.errors).flat().join(', ');
-        setError(errorMsg);
-      } else {
-        setError(err.response?.data?.message || "Failed to update product");
-      }
+      setError(err.response?.data?.message || "Failed to update product");
     } finally {
       setLoading(false);
     }
   };
 
-  if (loading && !initialProduct) {
-    return <div className="text-center my-5">Loading product data...</div>;
+  if (loading && !product.name) {
+    return <div className="loading-spinner">Loading...</div>;
   }
 
   return (
-    <div className="container mt-4">
-      <div className="card">
-        <div className="card-header">
-          <h2 className="mb-0">Edit Product</h2>
+    <div className="product-form-container">
+      <NavbarTop />
+      <Navbar />
+      <h2>Edit Product</h2>
+      
+      {error && <div className="alert alert-danger">{error}</div>}
+      {success && <div className="alert alert-success">{success}</div>}
+
+      <form onSubmit={handleSubmit} encType="multipart/form-data">
+        <div className="form-row">
+          <div className="form-group">
+            <label>Product Name*</label>
+            <input
+              type="text"
+              name="name"
+              value={product.name}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Category*</label>
+            <select
+              name="category_id"
+              value={product.category_id}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select Category</option>
+              {categories.map(category => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-        <div className="card-body">
-          {error && (
-            <div className="alert alert-danger alert-dismissible fade show">
-              {error}
-              <button type="button" className="btn-close" onClick={() => setError("")}></button>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label>Warehouse*</label>
+            <select
+              name="warehouse_id"
+              value={product.warehouse_id}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select Warehouse</option>
+              {warehouses.map(warehouse => (
+                <option key={warehouse.id} value={warehouse.id}>
+                  {warehouse.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label>Quantity*</label>
+            <input
+              type="number"
+              name="quantity"
+              min="0"
+              value={product.quantity}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label>Unit*</label>
+            <select
+              name="unit"
+              value={product.unit}
+              onChange={handleChange}
+              required
+            >
+              <option value="pcs">Pieces</option>
+              <option value="kg">Kilograms</option>
+              <option value="g">Grams</option>
+              <option value="l">Liters</option>
+              <option value="ml">Milliliters</option>
+              <option value="box">Box</option>
+              <option value="pack">Pack</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label>Price*</label>
+            <input
+              type="number"
+              name="price"
+              min="0"
+              step="0.01"
+              value={product.price}
+              onChange={handleChange}
+              required
+            />
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label>Threshold Value</label>
+            <input
+              type="number"
+              name="threshold_value"
+              min="0"
+              value={product.threshold_value}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Status</label>
+            <input
+              type="text"
+              name="status"
+              value={product.status.replace("-", " ")}
+              readOnly
+              className="status-display"
+            />
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label>Expiry Date</label>
+          <input
+            type="date"
+            name="expiry_date"
+            value={product.expiry_date}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Description</label>
+          <textarea
+            name="description"
+            value={product.description}
+            onChange={handleChange}
+            rows="3"
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Product Image</label>
+          {imagePreview && (
+            <div className="image-preview">
+              <img src={imagePreview} alt="Preview" />
             </div>
           )}
-          {success && (
-            <div className="alert alert-success alert-dismissible fade show">
-              {success}
-              <button 
-                type="button" 
-                className="btn-close" 
-                onClick={() => {
-                  setSuccess("");
-                  navigate("/products/list");
-                }}
-              ></button>
-            </div>
+          <input
+            type="file"
+            name="image"
+            onChange={handleFileChange}
+            accept="image/*"
+          />
+          {originalImage && !imagePreview.includes("blob:") && (
+            <p className="current-image-note">
+              Current image: {originalImage.split("/").pop()}
+            </p>
           )}
-
-          <form onSubmit={handleSubmit} encType="multipart/form-data">
-            <div className="row g-3">
-              <div className="col-md-6">
-                <label className="form-label">Name*</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="name"
-                  value={product.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label">Category*</label>
-                <select
-                  className="form-select"
-                  name="category_id"
-                  value={product.category_id}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Category</option>
-                  {categories.map((category) => (
-                    <option key={category.id} value={category.id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label">Warehouse*</label>
-                <select
-                  className="form-select"
-                  name="warehouse_id"
-                  value={product.warehouse_id}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Warehouse</option>
-                  {warehouses.map((warehouse) => (
-                    <option key={warehouse.id} value={warehouse.id}>
-                      {warehouse.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label">Quantity*</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  name="quantity"
-                  min="0"
-                  value={product.quantity}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label">Unit*</label>
-                <select
-                  className="form-select"
-                  name="unit"
-                  value={product.unit}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Unit</option>
-                  <option value="kg">Kilogram (kg)</option>
-                  <option value="ltr">Liter (ltr)</option>
-                  <option value="pcs">Pieces (pcs)</option>
-                  <option value="box">Gram (g)</option>
-                  <option value="bag">Milliliter (ml)</option>
-                </select>
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label">Price*</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  name="price"
-                  min="0"
-                  step="0.01"
-                  value={product.price}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label">Threshold Value</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  name="threshold_value"
-                  min="0"
-                  value={product.threshold_value}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label">Expiry Date</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  name="expiry_date"
-                  value={product.expiry_date}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label">Status</label>
-                <select 
-                  className="form-select"
-                  name="status" 
-                  value={product.status} 
-                  onChange={handleChange}
-                >
-                  <option value="in-stock">In Stock</option>
-                  <option value="out-of-stock">Out of Stock</option>
-                  <option value="low-stock">Low Stock</option>
-                </select>
-              </div>
-
-              <div className="col-12">
-                <label className="form-label">Description</label>
-                <textarea
-                  className="form-control"
-                  name="description"
-                  rows="3"
-                  value={product.description}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-12">
-                <label className="form-label">Image</label>
-                {imagePreview && (
-                  <div className="mb-3">
-                    <img 
-                      src={imagePreview} 
-                      alt="Product preview" 
-                      className="img-thumbnail" 
-                      style={{ maxWidth: '200px' }} 
-                    />
-                  </div>
-                )}
-                <input
-                  type="file"
-                  className="form-control"
-                  name="image"
-                  onChange={handleFileChange}
-                  accept="image/*"
-                />
-              </div>
-
-              <div className="col-12">
-                <button 
-                  type="submit" 
-                  className="btn btn-primary"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <><span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Updating...</>
-                  ) : (
-                    "Update Product"
-                  )}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary ms-2"
-                  onClick={() => navigate("/products/list")}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </form>
         </div>
-      </div>
+
+        <div className="form-actions">
+          <button type="submit" disabled={loading} className="btn btn-primary">
+            {loading ? "Updating..." : "Update Product"}
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate("/products/list")}
+            className="btn btn-secondary"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

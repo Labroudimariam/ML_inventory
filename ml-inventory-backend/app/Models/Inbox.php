@@ -13,6 +13,7 @@ class Inbox extends Model
         'subject',
         'message',
         'read_at',
+        'is_important',
     ];
 
     public function user()

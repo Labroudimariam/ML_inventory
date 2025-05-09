@@ -18,12 +18,13 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className={`admin-dashboard`}>
+    <div className="admin-dashboard">
       <NavbarTop isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} />
-      <h1>Admin Dashboard</h1>
       <Navbar />
       <div className="dashboard-content">
-        {/* Your dashboard content components */}
+        <h1>Admin Dashboard</h1>
+        <p>Welcome to the admin dashboard!</p>
+        {/* Add your dashboard content here */}
       </div>
     </div>
   );

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
+import NavbarTop from "../navbar/NavbarTop";
+import Navbar from "../navbar/Navbar";
 
 const AddInbox = () => {
   const [formData, setFormData] = useState({
@@ -8,7 +10,7 @@ const AddInbox = () => {
     user_type: "", // 'user' or 'beneficiary'
     sender_email: "",
     subject: "",
-    message: ""
+    message: "",
   });
   const [users, setUsers] = useState([]);
   const [beneficiaries, setBeneficiaries] = useState([]);
@@ -39,27 +41,29 @@ const AddInbox = () => {
       try {
         // First fetch all users (your API doesn't support role filtering)
         const usersResponse = await axios.get("/users");
-        
+
         // Then filter based on current user's role
-        let filteredUsers = usersResponse.data.filter(user => user.id !== currentUser.id);
-        
+        let filteredUsers = usersResponse.data.filter(
+          (user) => user.id !== currentUser.id
+        );
+
         if (currentUser.role === "admin") {
-          filteredUsers = filteredUsers.filter(user => 
-            user.role === "subadmin" || user.role === "storekeeper"
+          filteredUsers = filteredUsers.filter(
+            (user) => user.role === "subadmin" || user.role === "storekeeper"
           );
         } else if (currentUser.role === "subadmin") {
-          filteredUsers = filteredUsers.filter(user => 
-            user.role === "admin" || user.role === "storekeeper"
+          filteredUsers = filteredUsers.filter(
+            (user) => user.role === "admin" || user.role === "storekeeper"
           );
         } else if (currentUser.role === "storekeeper") {
-          filteredUsers = filteredUsers.filter(user => 
-            user.role === "admin" || user.role === "subadmin"
+          filteredUsers = filteredUsers.filter(
+            (user) => user.role === "admin" || user.role === "subadmin"
           );
         }
 
         // Fetch beneficiaries
         const beneficiariesResponse = await axios.get("/beneficiaries");
-        
+
         setUsers(filteredUsers);
         setBeneficiaries(beneficiariesResponse.data);
       } catch (err) {
@@ -67,16 +71,16 @@ const AddInbox = () => {
         console.error("Fetch error:", err);
       }
     };
-    
+
     fetchRecipients();
   }, [currentUser]);
 
   // ... rest of your component remains the same ...
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
@@ -89,8 +93,9 @@ const AddInbox = () => {
     try {
       const payload = {
         ...formData,
-        [formData.user_type === 'beneficiary' ? 'beneficiary_id' : 'user_id']: formData.user_id,
-        sender_email: formData.sender_email || currentUser?.email
+        [formData.user_type === "beneficiary" ? "beneficiary_id" : "user_id"]:
+          formData.user_id,
+        sender_email: formData.sender_email || currentUser?.email,
       };
 
       const res = await axios.post("/inboxes", payload);
@@ -105,6 +110,8 @@ const AddInbox = () => {
 
   return (
     <div className="add-inbox">
+      <NavbarTop />
+      <Navbar />
       <h2>Send Message</h2>
       {error && <div className="error-message">{error}</div>}
       {success && <div className="success-message">{success}</div>}
@@ -133,20 +140,22 @@ const AddInbox = () => {
             required
             disabled={!formData.user_type}
           >
-            <option value="">Select {formData.user_type === 'beneficiary' ? 'Beneficiary' : 'User'}</option>
-            {formData.user_type === 'beneficiary' ? (
-              beneficiaries.map(beneficiary => (
-                <option key={beneficiary.id} value={beneficiary.id}>
-                  {beneficiary.name} ({beneficiary.contact_info || beneficiary.id})
-                </option>
-              ))
-            ) : (
-              users.map(user => (
-                <option key={user.id} value={user.id}>
-                  {user.name} ({user.email}) - {user.role}
-                </option>
-              ))
-            )}
+            <option value="">
+              Select{" "}
+              {formData.user_type === "beneficiary" ? "Beneficiary" : "User"}
+            </option>
+            {formData.user_type === "beneficiary"
+              ? beneficiaries.map((beneficiary) => (
+                  <option key={beneficiary.id} value={beneficiary.id}>
+                    {beneficiary.name} (
+                    {beneficiary.contact_info || beneficiary.id})
+                  </option>
+                ))
+              : users.map((user) => (
+                  <option key={user.id} value={user.id}>
+                    {user.name} ({user.email}) - {user.role}
+                  </option>
+                ))}
           </select>
         </div>
 
@@ -155,7 +164,7 @@ const AddInbox = () => {
           <input
             type="email"
             name="sender_email"
-            value={formData.sender_email || (currentUser?.email || "")}
+            value={formData.sender_email || currentUser?.email || ""}
             onChange={handleChange}
             required
             readOnly={!!currentUser?.email}

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import { useParams } from "react-router-dom";
+import NavbarTop from "../navbar/NavbarTop";
+import Navbar from "../navbar/Navbar";
 
 const ViewReport = () => {
   const { id } = useParams();
@@ -38,6 +40,8 @@ const ViewReport = () => {
 
   return (
     <div className="view-report">
+      <NavbarTop />
+      <Navbar />
       <h2>{report.name}</h2>
       <div className="report-meta">
         <p><strong>Type:</strong> {report.type}</p>

@@ -110,6 +110,9 @@ class AuthController extends Controller
         return response()->json(['message' => 'Déconnecté']);
     }
 
+
+
+    // Update user profile
     public function forgotPassword(Request $request)
     {
         $validator = Validator::make($request->all(), [

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import { Link } from "react-router-dom";
 import Navbar from "../navbar/Navbar";
+import "./userList.css";
+import NavbarTop from "../navbar/NavbarTop";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
@@ -12,6 +14,7 @@ const UserList = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (user?.role !== "admin") {
       setError("You don't have permission to view users");
+      setLoading(false);
       return;
     }
 
@@ -44,8 +47,9 @@ const UserList = () => {
 
   return (
     <div className="user-list">
-      <h2>Users</h2>
+      <NavbarTop />
       <Navbar />
+      <h2>Users</h2>
       {error && <div className="error-message">{error}</div>}
       {loading ? (
         <div>Loading...</div>
@@ -56,6 +60,7 @@ const UserList = () => {
               <th>Photo</th>
               <th>Name</th>
               <th>Email</th>
+              <th>Phone</th>
               <th>Username</th>
               <th>City</th>
               <th>Country</th>
@@ -68,18 +73,21 @@ const UserList = () => {
             {users.map((user) => (
               <tr key={user.id}>
                 <td>
-                <img width={50} height={50}
-                    src={
-                      user.profile_picture
-                        ? `http://localhost:8000/storage/${user.profile_picture}`
-                        : "/unknown_user.jpeg"
-                    }
+                  <img
+                    width={50}
+                    height={50}
+                    src={user.profile_picture_url || "/unknown_user.jpeg"}
                     alt="Profile"
                     className="profile-img"
+                    onError={(e) => {
+                      console.error("Failed to load image:", e.target.src);
+                      e.target.src = "/unknown_user.jpeg";
+                    }}
                   />
                 </td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
+                <td>{user.phone}</td>
                 <td>{user.username}</td>
                 <td>{user.city}</td>
                 <td>{user.country}</td>

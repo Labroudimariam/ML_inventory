@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import { Link } from "react-router-dom";
 import Navbar from "../navbar/Navbar";
+import NavbarTop from "../navbar/NavbarTop";
 
 const InboxList = () => {
   const [inboxes, setInboxes] = useState([]);
@@ -56,8 +57,9 @@ const InboxList = () => {
 
   return (
     <div className="inbox-list">
-      <h2>Inbox Messages</h2>
+      <NavbarTop />
       <Navbar />
+      <h2>Inbox Messages</h2>
       {error && <div className="error-message">{error}</div>}
       {loading ? (
         <div>Loading...</div>

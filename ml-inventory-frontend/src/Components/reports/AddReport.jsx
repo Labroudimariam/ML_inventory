@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from '../../axios';
 import { useNavigate } from 'react-router-dom';
+import NavbarTop from '../navbar/NavbarTop';
+import Navbar from '../navbar/Navbar';
 
 const AddReport = () => {
   const [form, setForm] = useState({
@@ -70,6 +72,8 @@ const AddReport = () => {
 
   return (
     <div className="p-6 max-w-xl mx-auto bg-white shadow rounded">
+      <NavbarTop />
+      <Navbar />
       <h2 className="text-xl font-bold mb-4">Add Report</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input

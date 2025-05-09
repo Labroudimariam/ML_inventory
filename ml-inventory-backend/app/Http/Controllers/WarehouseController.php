@@ -3,83 +3,95 @@
 namespace App\Http\Controllers;
 
 use App\Models\Warehouse;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class WarehouseController extends Controller
 {
-    /**
-     * Display a listing of the warehouses.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $warehouses = Warehouse::all(); // Fetch all warehouses
-        return response()->json($warehouses, Response::HTTP_OK); // Return JSON response
+        return Warehouse::with(['storekeeper', 'products'])->get();
     }
 
-    /**
-     * Store a newly created warehouse in the database.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
+            'user_id' => 'nullable|exists:users,id',
             'name' => 'required|string|max:255',
-            'location' => 'nullable|string|max:255',
+            'location' => 'required|string',
             'description' => 'nullable|string',
+            'capacity' => 'nullable|integer|min:0',
+            'current_stock' => 'nullable|integer|min:0',
         ]);
 
-        $warehouse = Warehouse::create($validated); // Create new warehouse record
-        return response()->json($warehouse, Response::HTTP_CREATED); // Return newly created warehouse
+        $warehouse = Warehouse::create($validated);
+        return response()->json($warehouse, Response::HTTP_CREATED);
     }
 
-    /**
-     * Display the specified warehouse.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
-        $warehouse = Warehouse::findOrFail($id); // Find warehouse by ID or fail
-        return response()->json($warehouse, Response::HTTP_OK); // Return warehouse data
+        $warehouse = Warehouse::with(['storekeeper', 'products'])->findOrFail($id);
+        return response()->json($warehouse);
     }
 
-    /**
-     * Update the specified warehouse in the database.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
-        $warehouse = Warehouse::findOrFail($id); // Find warehouse by ID
+        $warehouse = Warehouse::findOrFail($id);
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'location' => 'nullable|string|max:255',
+            'user_id' => 'nullable|exists:users,id',
+            'name' => 'sometimes|string|max:255',
+            'location' => 'sometimes|string',
             'description' => 'nullable|string',
+            'capacity' => 'nullable|integer|min:0',
+            'current_stock' => 'nullable|integer|min:0',
         ]);
 
-        $warehouse->update($validated); // Update warehouse with new data
-        return response()->json($warehouse, Response::HTTP_OK); // Return updated warehouse
+        $warehouse->update($validated);
+        return response()->json($warehouse);
     }
 
-    /**
-     * Remove the specified warehouse from the database.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
-        $warehouse = Warehouse::findOrFail($id); // Find warehouse by ID
-        $warehouse->delete(); // Delete warehouse record
-        return response()->json(null, Response::HTTP_NO_CONTENT); // Return 204 No Content response
+        $warehouse = Warehouse::findOrFail($id);
+        
+        // Prevent deletion if warehouse contains products
+        if ($warehouse->products()->count() > 0) {
+            return response()->json(
+                ['message' => 'Cannot delete warehouse with products. Move products first.'], 
+                Response::HTTP_CONFLICT
+            );
+        }
+
+        $warehouse->delete();
+        return response()->json(null, Response::HTTP_NO_CONTENT);
+    }
+
+    public function getProducts($warehouseId)
+    {
+        $products = Product::where('warehouse_id', $warehouseId)->get();
+        return response()->json($products);
+    }
+
+    public function getInventory($warehouseId)
+    {
+        $inventory = Warehouse::with(['products' => function($query) {
+            $query->with('category');
+        }])->findOrFail($warehouseId);
+
+        return response()->json($inventory);
+    }
+
+    public function getCapacity($warehouseId)
+    {
+        $warehouse = Warehouse::findOrFail($warehouseId);
+        $usedCapacity = $warehouse->products()->sum('quantity');
+        
+        return response()->json([
+            'total_capacity' => $warehouse->capacity,
+            'used_capacity' => $usedCapacity,
+            'available_capacity' => $warehouse->capacity - $usedCapacity
+        ]);
     }
 }

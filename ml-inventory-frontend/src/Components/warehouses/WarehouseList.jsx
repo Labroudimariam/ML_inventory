@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
-import axios from "../../axios"; 
+import axios from "../../axios";
 import { Link } from "react-router-dom";
 import Navbar from "../navbar/Navbar";
+import NavbarTop from "../navbar/NavbarTop";
 
 const WarehouseList = () => {
   const [warehouses, setWarehouses] = useState([]);
@@ -9,8 +10,12 @@ const WarehouseList = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (user?.role !== 'admin' && user?.role !== 'subadmin' && user?.role !== 'storekeeper') {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (
+      user?.role !== "admin" &&
+      user?.role !== "subadmin" &&
+      user?.role !== "storekeeper"
+    ) {
       setError("You don't have permission to view warehouses");
       return;
     }
@@ -20,16 +25,19 @@ const WarehouseList = () => {
         const response = await axios.get("/warehouses");
         setWarehouses(response.data);
       } catch (error) {
-        console.error("Error fetching warehouses:", error.response || error.message);
+        console.error(
+          "Error fetching warehouses:",
+          error.response || error.message
+        );
         setError("Failed to fetch warehouses.");
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchWarehouses();
   }, []);
-  
+
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this warehouse?")) {
       try {
@@ -43,8 +51,9 @@ const WarehouseList = () => {
 
   return (
     <div className="warehouse-list">
-      <h2>Warehouses</h2>
+      <NavbarTop />
       <Navbar />
+      <h2>Warehouses</h2>
       {error && <div className="error-message">{error}</div>}
       {loading ? (
         <div>Loading...</div>
@@ -66,14 +75,18 @@ const WarehouseList = () => {
                 <td>{warehouse.description}</td>
                 <td>
                   <Link to={`/warehouse/edit/${warehouse.id}`}>Edit</Link> |{" "}
-                  <button onClick={() => handleDelete(warehouse.id)}>Delete</button>
+                  <button onClick={() => handleDelete(warehouse.id)}>
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       )}
-      <Link to="/warehouse/add" className="btn">Add New Warehouse</Link>
+      <Link to="/warehouse/add" className="btn">
+        Add New Warehouse
+      </Link>
     </div>
   );
 };

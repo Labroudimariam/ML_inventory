@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import { useNavigate, useParams } from "react-router-dom";
+import Navbar from "../navbar/Navbar";
+import NavbarTop from "../navbar/NavbarTop";
 
 const EditBeneficiary = () => {
   const { id } = useParams();
@@ -81,6 +83,8 @@ const EditBeneficiary = () => {
 
   return (
     <div className="container mt-4">
+           <NavbarTop />
+            <Navbar />
       <div className="card">
         <div className="card-header">
           <h2 className="mb-0">Edit Beneficiary</h2>

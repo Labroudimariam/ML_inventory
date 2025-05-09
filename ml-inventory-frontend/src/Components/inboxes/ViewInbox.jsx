@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import { useParams, useNavigate } from "react-router-dom";
+import NavbarTop from "../navbar/NavbarTop";
+import Navbar from "../navbar/Navbar";
 
 const ViewInbox = () => {
   const { id } = useParams();
@@ -39,6 +41,8 @@ const ViewInbox = () => {
 
   return (
     <div className="view-inbox">
+           <NavbarTop />
+            <Navbar />
       <h2>Message Details</h2>
       
       <div className="inbox-details">

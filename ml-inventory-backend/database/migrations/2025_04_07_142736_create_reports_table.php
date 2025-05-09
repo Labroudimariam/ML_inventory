@@ -14,14 +14,19 @@ return new class extends Migration
         Schema::create('reports', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('type', ['Product','Category', 'Inventory', 'Beneficiary', 'Order']);
+            $table->enum('type', ['Product','Category', 'Inventory', 'Beneficiary','warehouse', 'Order']);
             $table->date('start_date');
             $table->date('end_date');
             $table->json('filters')->nullable();
             $table->json('data')->nullable();
+            $table->enum('format', ['pdf', 'excel', 'csv'])->nullable();
+            $table->string('file_path')->nullable();
+            $table->enum('status', ['pending', 'processing', 'completed', 'failed'])->default('pending');
+            $table->text('description')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
+        
     }
 
     /**

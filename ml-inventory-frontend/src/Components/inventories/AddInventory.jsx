@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
+import NavbarTop from "../navbar/NavbarTop";
+import Navbar from "../navbar/Navbar";
 
 const AddInventory = () => {
   const [formData, setFormData] = useState({
@@ -70,6 +72,8 @@ const AddInventory = () => {
 
   return (
     <div className="add-inventory">
+      <NavbarTop />
+      <Navbar />
       <h2>Add Inventory Record</h2>
       {error && <div className="error-message">{error}</div>}
       {success && <div className="success-message">{success}</div>}

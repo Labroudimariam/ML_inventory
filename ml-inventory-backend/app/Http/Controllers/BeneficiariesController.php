@@ -23,14 +23,14 @@ class BeneficiariesController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:beneficiaries,email',
             'phone' => 'required|string|max:255',
-            'gender' => 'required|in:Male,Female,Other',
+            'gender' => 'required|string',
             'address' => 'required|string',
             'city' => 'required|string',
             'state' => 'required|string',
             'country' => 'required|string',
+            'nombre_insemination_artificielle' => 'required|integer|min:1',
             'postal_code' => 'required|string',
             'additional_info' => 'nullable|string',
-            'nombre_insemination_artificielle' => 'required|integer|min:1',
         ]);
 
         $beneficiary = Beneficiary::create($validated);
@@ -45,14 +45,14 @@ class BeneficiariesController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:beneficiaries,email,' . $id,
             'phone' => 'required|string|max:255',
-            'gender' => 'required|in:Male,Female,Other',
+            'gender' => 'required|string',
             'address' => 'required|string',
             'city' => 'required|string',
             'state' => 'required|string',
             'country' => 'required|string',
+            'nombre_insemination_artificielle' => 'required|integer|min:1',
             'postal_code' => 'required|string',
             'additional_info' => 'nullable|string',
-            'nombre_insemination_artificielle' => 'required|integer|min:1',
         ]);
 
         $beneficiary->update($validated);

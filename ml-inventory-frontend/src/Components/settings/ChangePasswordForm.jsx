@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../axios';
+import NavbarTop from '../navbar/NavbarTop';
+import Navbar from '../navbar/Navbar';
 
 const ChangePasswordForm = () => {
   const [passwordData, setPasswordData] = useState({
@@ -93,6 +95,8 @@ const ChangePasswordForm = () => {
   };
   return (
     <div className="form-container">
+      <NavbarTop />
+      <Navbar />
       <form onSubmit={handleSubmit} className="password-form">
         <h2>Change Password</h2>
 

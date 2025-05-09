@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('subject')->nullable();
             $table->text('message');
             $table->timestamp('read_at')->nullable();
+            $table->boolean('is_important')->default(false);
             $table->timestamps();
         });
     }

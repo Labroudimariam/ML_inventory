@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../axios';
 import './updateProfileForm.css';
+import NavbarTop from '../navbar/NavbarTop';
+import Navbar from '../navbar/Navbar';
 
 const UpdateProfileForm = () => {
   const navigate = useNavigate();
@@ -121,6 +123,8 @@ const UpdateProfileForm = () => {
 
   return (
     <div className="container mt-4">
+      <NavbarTop />
+      <Navbar />
       <div className="card">
         <div className="card-header">
           <h2 className="mb-0">Edit Profile</h2>

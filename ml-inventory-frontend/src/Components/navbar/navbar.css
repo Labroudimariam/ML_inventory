@@ -1,35 +1,50 @@
-/* Sidebar - Light Mode */
+/* === Base Sidebar === */
 .sidebar {
   width: 200px;
-  height: 100vh;
-  background-color: #ffffff;
+  height: calc(100vh - 68px);
+  background-color: #42c90d;
   padding: 1.5rem 1rem;
   color: #202224;
   position: fixed;
-  top: 0;
+  top: 68px;
   left: 0;
   overflow-y: auto;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
-
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none;  /* IE and Edge */
+  z-index: 1050;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(0);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar::-webkit-scrollbar {
   display: none;
 }
 
-/* Dark Mode */
-html.dark .sidebar,
-body.dark-mode .sidebar {
-  color: #f3f4f6;
-}
-
-/* Nav Links */
+/* === Nav Links === */
 .nav-links {
   display: flex;
   flex-direction: column;
+  height: 100%;
+}
+
+.nav-top {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   gap: 0.7rem;
+  padding-bottom: 1rem; /* Espace avant le bouton logout */
+}
+
+.nav-bottom {
+  padding: 1rem 0;
+  border-top: 1px solid rgba(0, 0, 0, 0.1); 
+  position: sticky;
+  bottom: -1.5rem; 
+  background-color: #ffffff;
+  margin-top: auto;
+  margin-bottom: -1rem; 
 }
 
 .nav-links a {
@@ -44,24 +59,6 @@ body.dark-mode .sidebar {
   gap: 0.6rem;
 }
 
-/* Dark Mode Links */
-html.dark .nav-links a,
-body.dark-mode .nav-links a {
-  color: #f3f4f6;
-}
-
-html.dark .nav-links a:hover,
-body.dark-mode .nav-links a:hover {
-  color: #ffffff;
-}
-
-html.dark .nav-links a.active,
-body.dark-mode .nav-links a.active {
-  background-color: #2563eb;
-  color: #ffffff;
-}
-
-/* Hover */
 .nav-links a:hover {
   background-color: #f4f6f8;
   color: #202224;
@@ -69,33 +66,129 @@ body.dark-mode .nav-links a.active {
   transform: translateX(2px);
 }
 
-/* Active link */
 .nav-links a.active {
   background-color: #4880FF;
   color: #ffffff;
   font-weight: 600;
 }
 
-/* Logout specific */
 .nav-links .logout {
-  color: #f87171;
+  color: #dc2626;
   font-weight: 600;
-  margin-top: 1rem;
+  margin-top: 0.5rem;
 }
 
 .nav-links .logout:hover {
-  background-color: #7f1d1d;
-  color: #ffffff;
-}
-
-/* Dark Mode - Logout Link */
-html.dark .nav-links .logout,
-body.dark-mode .nav-links .logout {
-  color: #fca5a5;
-}
-
-html.dark .nav-links .logout:hover,
-body.dark-mode .nav-links .logout:hover {
   background-color: #dc2626;
   color: #ffffff;
+}
+
+/* === Dark Mode === */
+html.dark .sidebar,
+body.dark-mode .sidebar {
+  background-color: #1f2937;
+  color: #f3f4f6;
+}
+
+html.dark .nav-links a {
+  color: #f3f4f6;
+}
+
+html.dark .nav-links a:hover {
+  background-color: #374151;
+  color: #ffffff;
+}
+
+html.dark .nav-links a.active {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+html.dark .nav-links .logout {
+  color: #dc2626;
+}
+
+html.dark .nav-links .logout:hover {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+html.dark .nav-bottom {
+  background-color: #1f2937;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* === Overlay for mobile sidebar === */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1040;
+  display: none;
+}
+
+.sidebar.open ~ .sidebar-overlay {
+  display: block;
+}
+
+/* === Mobile Menu Button === */
+.mobile-menu-button {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 1100;
+  background: #4880FF;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+/* === Extra small phones === */
+@media (max-width: 400px) {
+  .sidebar {
+    width: 180px;
+  }
+}
+
+/* === Phones only === */
+@media (max-width: 600px) {
+  .sidebar {
+    transform: translateX(-100%);
+    top: 0;
+    height: 100vh;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .nav-bottom {
+    bottom: -1.5rem; 
+  }
+
+  .mobile-menu-button {
+    display: block;
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
+  
+}
+
+/* === Tablets and up === */
+@media (min-width: 601px) {
+  .sidebar {
+    transform: translateX(0) !important;
+  }
+
+  .mobile-menu-button,
+  .sidebar-overlay {
+    display: none !important;
+  }
 }

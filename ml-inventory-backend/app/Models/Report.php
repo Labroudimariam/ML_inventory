@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
-use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class Report extends Model
 {
-    //
-    protected $fillable = ['name', 'type', 'start_date', 'end_date', 'filters', 'data', 'user_id'];
+    protected $fillable = [
+        'name', 'type', 'start_date', 'end_date', 'filters', 'data',
+        'format', 'file_path', 'status', 'description', 'user_id'
+    ];
 
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 }

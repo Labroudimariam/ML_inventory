@@ -1,73 +1,216 @@
 .navbar-top {
+  width: 100%;
+  padding: 12px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: #fb1515;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  z-index: 1000;
+}
+
+.navbar-top.dark {
+  background-color: #1f2937;
+  color: #ffffff;
+}
+
+/* Left section containing logo and search */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 100px;
+}
+
+.navbar-logo-img {
+  height: auto;
+  max-width: 100px;
+}
+
+.navbar-search {
+  position: relative;
+  width: 300px;
+}
+
+.navbar-search input {
+  width: 100%;
+  padding: 10px 14px 10px 40px;
+  border-radius: 9999px;
+  background-color: #f1f5f9;
+  border: none;
+  color: #374151;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.navbar-top.dark .navbar-search input {
+  background-color: transparent;
+  border: 1px solid #4b5563;
+  color: #f9fafb;
+}
+
+.navbar-search input:focus {
+  outline: 1px solid #3b82f6;
+  background-color: #e0f2fe;
+}
+
+.navbar-top.dark .navbar-search input:focus {
+  background-color: transparent;
+  border-color: #60a5fa;
+}
+
+/* Search Icon */
+.navbar-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+.navbar-top.dark .navbar-search-icon {
+  color: #d1d5db;
+}
+
+/* Right section containing icons */
+.navbar-icons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.navbar-icons button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  color: inherit;
+  transition: transform 0.2s ease;
+}
+
+.navbar-icons button:hover {
+  transform: scale(1.1);
+}
+
+/* Notification Dot */
+.notification-dot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 9px;
+  height: 9px;
+  background-color: #ef4444;
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+}
+
+.navbar-top.dark .notification-dot {
+  border-color: #1f2937;
+}
+
+/* Profile Image */
+.navbar-profile-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 9999px;
+  object-fit: cover;
+  border: 2px solid #d1d5db;
+  transition: transform 0.3s ease;
+  background-color: transparent;
+}
+
+.navbar-top.dark .navbar-profile-img {
+  border-color: #4b5563;
+  background-color: transparent;
+}
+
+.navbar-profile-img:hover {
+  transform: scale(1.05);
+}
+
+/* === Extra small phones === */
+@media (max-width: 400px) {
+  .navbar-top {
+    padding: 10px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
     width: 100%;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
-  
-  .navbar-top.dark {
-    background-color: #1f2937;
-    color: white;
+
+  .navbar-logo-img {
+    max-width: 70px;
   }
-  
+
   .navbar-search {
-    position: relative;
-    width: 33%;
-  }
-  
-  .navbar-search input {
     width: 100%;
-    padding: 8px 12px 8px 36px;
-    border-radius: 8px;
-    background-color: #f1f5f9;
-    border: none;
-    color: #374151;
-    font-size: 14px;
   }
-  
-  .navbar-search input:focus {
-    outline: 2px solid #3b82f6;
+
+  .navbar-search input {
+    font-size: 13px;
+    padding-left: 36px;
   }
-  
-  .navbar-search-icon {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #9ca3af;
-  }
-  
+
   .navbar-icons {
-    display: flex;
-    align-items: center;
+    width: 100%;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+  }
+}
+
+/* === Phones only === */
+@media (max-width: 600px) {
+  .navbar-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .navbar-left {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
     gap: 16px;
   }
-  
-  .navbar-icons button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    position: relative;
+
+  .navbar-search {
+    width: 100%;
   }
-  
-  .navbar-icons .notification-dot {
-    position: absolute;
-    top: -2px;
-    right: -2px;
-    width: 8px;
-    height: 8px;
-    background-color: #ef4444;
-    border-radius: 50%;
+
+  .navbar-icons {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 10px;
   }
-  
-  .navbar-profile-img {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 1px solid #d1d5db;
+}
+
+/* === Tablets and up === */
+@media (min-width: 601px) {
+  .navbar-top {
+    flex-direction: row;
+    align-items: center;
   }
-  
+
+  .navbar-left {
+    flex-direction: row;
+    align-items: center;
+    gap: 100px;
+  }
+
+  .navbar-search {
+    width: 260px;
+  }
+
+  .navbar-icons {
+    gap: 16px;
+  }
+}

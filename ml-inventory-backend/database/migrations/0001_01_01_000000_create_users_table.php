@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
@@ -18,41 +15,33 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('username')->unique();
+            $table->string('phone')->unique();
+            $table->string('gender')->nullable();
+            $table->string('cin')->unique();
             $table->date('date_of_birth');
-            $table->string('address');
-            $table->string('permanent_address')->nullable();
+            $table->text('address');
+            $table->text('permanent_address')->nullable();
             $table->string('city');
             $table->string('country');
             $table->string('postal_code')->nullable();
-            $table->enum('role', ['admin', 'subadmin', 'storekeeper'])->default('storekeeper');
+            $table->enum('role', ['admin', 'subadmin', 'storekeeper', 'driver'])->default('storekeeper');
             $table->string('profile_picture')->nullable();
+            
+            // New driver-specific fields
+            $table->boolean('is_driver')->default(false);
+            $table->string('driver_license_number')->nullable();
+            $table->string('vehicle_type')->nullable();
+            $table->string('vehicle_registration')->nullable();
+            
+            $table->string('reset_password_token')->nullable();
+            $table->timestamp('reset_password_expires')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
-
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
-        });
-
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
-            $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->longText('payload');
-            $table->integer('last_activity')->index();
-        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('users');
-        Schema::dropIfExists('password_reset_tokens');
-        Schema::dropIfExists('sessions');
     }
 };

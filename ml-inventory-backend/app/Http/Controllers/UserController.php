@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -11,26 +12,19 @@ use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the users.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
         $users = User::all();
+
+        // Debug output
+        foreach ($users as $user) {
+            Log::debug("User {$user->id} profile URL: " . $user->profile_picture_url);
+        }
         return response()->json($users, Response::HTTP_OK);
     }
 
-    /**
-     * Store a newly created user in the database.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -38,14 +32,21 @@ class UserController extends Controller
             'email' => 'required|email|unique:users',
             'username' => 'required|string|unique:users',
             'password' => 'required|string|min:8',
+            'phone' => 'required|string|unique:users',
+            'gender' => 'nullable|string',
+            'cin' => 'required|string|unique:users',
             'date_of_birth' => 'required|date',
             'address' => 'required|string',
             'permanent_address' => 'nullable|string',
             'city' => 'required|string',
             'country' => 'required|string',
             'postal_code' => 'nullable|string',
-            'role' => 'required|in:admin,subadmin,storekeeper',
+            'role' => 'required|in:admin,subadmin,storekeeper,driver',
             'profile_picture' => 'nullable|image|max:2048',
+            'is_driver' => 'boolean',
+            'driver_license_number' => 'nullable|string',
+            'vehicle_type' => 'nullable|string',
+            'vehicle_registration' => 'nullable|string',
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
@@ -58,25 +59,12 @@ class UserController extends Controller
         return response()->json($user, Response::HTTP_CREATED);
     }
 
-    /**
-     * Display the specified user.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $user = User::findOrFail($id);
         return response()->json($user, Response::HTTP_OK);
     }
 
-    /**
-     * Update the specified user in the database.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
@@ -86,14 +74,21 @@ class UserController extends Controller
             'email' => 'sometimes|email|unique:users,email,' . $id,
             'username' => 'sometimes|string|unique:users,username,' . $id,
             'password' => 'sometimes|string|min:8',
+            'phone' => 'sometimes|string|unique:users,phone,' . $id,
+            'gender' => 'nullable|string',
+            'cin' => 'sometimes|string|unique:users,cin,' . $id,
             'date_of_birth' => 'sometimes|date',
             'address' => 'sometimes|string',
             'permanent_address' => 'nullable|string',
             'city' => 'sometimes|string',
             'country' => 'sometimes|string',
             'postal_code' => 'nullable|string',
-            'role' => 'sometimes|in:admin,subadmin,storekeeper',
+            'role' => 'sometimes|in:admin,subadmin,storekeeper,driver',
             'profile_picture' => 'nullable|image|max:2048',
+            'is_driver' => 'boolean',
+            'driver_license_number' => 'nullable|string',
+            'vehicle_type' => 'nullable|string',
+            'vehicle_registration' => 'nullable|string',
         ]);
 
         if (isset($validated['password'])) {
@@ -116,17 +111,10 @@ class UserController extends Controller
         ]);
     }
 
-    /**
-     * Remove the specified user from the database.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $user = User::findOrFail($id);
 
-        // Delete associated profile picture
         if ($user->profile_picture) {
             Storage::disk('public')->delete($user->profile_picture);
         }
@@ -135,49 +123,41 @@ class UserController extends Controller
         return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 
-
-
-
     public function changePassword(Request $request)
     {
         try {
             $user = JWTAuth::parseToken()->authenticate();
-            
+
             $validator = Validator::make($request->all(), [
                 'old_password' => 'required|string|min:8',
                 'new_password' => 'required|string|min:8|confirmed',
             ]);
-    
+
             if ($validator->fails()) {
                 return response()->json([
                     'success' => false,
                     'errors' => $validator->errors()
                 ], 422);
             }
-    
+
             if (!Hash::check($request->old_password, $user->password)) {
                 return response()->json([
                     'success' => false,
                     'message' => 'Current password is incorrect'
                 ], 400);
             }
-    
-            // Update password
-            $user->password = $request->new_password;
+
+            $user->password = Hash::make($request->new_password);
             $user->save();
-    
-            // Invalidate ALL tokens for this user
+
             JWTAuth::manager()->invalidate(new \Tymon\JWTAuth\Token(JWTAuth::getToken()), true);
-            
-            // Generate new token
             $newToken = JWTAuth::fromUser($user);
-    
+
             return response()->json([
                 'success' => true,
                 'message' => 'Password changed successfully',
                 'token' => $newToken
             ]);
-    
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
@@ -185,6 +165,4 @@ class UserController extends Controller
             ], 401);
         }
     }
-    
-    
 }

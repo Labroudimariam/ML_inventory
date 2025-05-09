@@ -1,11 +1,13 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import NavbarTop from './navbar/NavbarTop'
+import Navbar from './navbar/Navbar'
 
 const StoreKeeperDashboard = () => {
   return (
-    <div>
+    <div className='storekeeper-dashboard'>
+      <NavbarTop />
+      <Navbar />
       <h1>StoreKeeperDashboard</h1>
-      <Link to="/inboxes/list">Inbox List</Link><br />
     </div>
   )
 }

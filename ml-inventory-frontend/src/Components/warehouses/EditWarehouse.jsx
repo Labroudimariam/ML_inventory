@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import { useNavigate, useParams } from "react-router-dom";
+import NavbarTop from "../navbar/NavbarTop";
+import Navbar from "../navbar/Navbar";
 
 const EditWarehouse = () => {
   const { id } = useParams();
@@ -79,6 +81,8 @@ const EditWarehouse = () => {
 
   return (
     <div className="container mt-4">
+      <NavbarTop />
+      <Navbar />
       <div className="card">
         <div className="card-header">
           <h2 className="mb-0">Edit Warehouse</h2>

@@ -24,6 +24,7 @@ return new class extends Migration
             $table->date('expiry_date')->nullable();
             $table->enum('status', ['in-stock', 'out-of-stock', 'low-stock'])->default('in-stock');
             $table->text('description')->nullable();
+            $table->string('barcode')->nullable();
             $table->timestamps();
         });
     }

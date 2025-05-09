@@ -15,15 +15,15 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('phone');
-            $table->enum('gender', ['Male', 'Female', 'Other']);
+            $table->string('phone')->unique();
+            $table->string('gender')->nullable();
             $table->text('address');
             $table->string('city');
             $table->string('state');
             $table->string('country');
+            $table->integer('nombre_insemination_artificielle');
             $table->string('postal_code')->nullable();
             $table->text('additional_info')->nullable();
-            $table->integer('nombre_insemination_artificielle');
             $table->timestamps();
         });
     }

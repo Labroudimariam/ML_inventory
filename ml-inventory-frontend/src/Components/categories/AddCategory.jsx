@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
+import NavbarTop from "../navbar/NavbarTop";
+import Navbar from "../navbar/Navbar";
 
 const AddCategory = () => {
   const [formData, setFormData] = useState({
@@ -39,6 +41,8 @@ const AddCategory = () => {
 
   return (
     <div className="add-category">
+           <NavbarTop />
+            <Navbar />
       <h2>Add Category</h2>
       {error && <div className="error-message">{error}</div>}
       {success && <div className="success-message">{success}</div>}

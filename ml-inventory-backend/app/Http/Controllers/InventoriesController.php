@@ -9,18 +9,19 @@ class InventoriesController extends Controller
 {
     public function index()
     {
-        return Inventory::with(['product', 'user'])->get();
+        return Inventory::with(['product', 'user', 'warehouse'])->get();
     }
-    
+
     public function show($id)
     {
-        return Inventory::with(['product', 'user'])->findOrFail($id);
+        return Inventory::with(['product', 'user', 'warehouse'])->findOrFail($id);
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
+            'warehouse_id' => 'required|exists:warehouses,id',
             'quantity' => 'required|integer',
             'movement_type' => 'required|in:in,out',
             'reason' => 'required|string',
@@ -28,7 +29,8 @@ class InventoriesController extends Controller
         ]);
 
         $inventory = Inventory::create($validated);
-        return response()->json(Inventory::with(['product', 'user'])->find($inventory->id), 201);
+
+        return response()->json(Inventory::with(['product', 'user', 'warehouse'])->find($inventory->id), 201);
     }
 
     public function update(Request $request, $id)
@@ -37,6 +39,7 @@ class InventoriesController extends Controller
 
         $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
+            'warehouse_id' => 'required|exists:warehouses,id',
             'quantity' => 'required|integer',
             'movement_type' => 'required|in:in,out',
             'reason' => 'required|string',
@@ -44,14 +47,15 @@ class InventoriesController extends Controller
         ]);
 
         $inventory->update($validated);
-        return response()->json(Inventory::with(['product', 'user'])->find($id));
+
+        return response()->json(Inventory::with(['product', 'user', 'warehouse'])->find($inventory->id));
     }
 
     public function destroy($id)
     {
         $inventory = Inventory::findOrFail($id);
         $inventory->delete();
+
         return response()->json(['message' => 'Inventory record deleted']);
     }
 }
-

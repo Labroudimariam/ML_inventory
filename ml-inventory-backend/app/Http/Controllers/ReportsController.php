@@ -16,22 +16,25 @@ class ReportsController extends Controller
     {
         return Report::with('user')->findOrFail($id);
     }
-    
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|in:Product,Category,Inventory,Beneficiary,Order',
+            'type' => 'required|in:Product,Category,Inventory,Beneficiary,warehouse,Order',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
             'filters' => 'nullable|json',
             'data' => 'nullable|json',
+            'format' => 'nullable|in:pdf,excel,csv',
+            'file_path' => 'nullable|string',
+            'status' => 'nullable|in:pending,processing,completed,failed',
+            'description' => 'nullable|string',
             'user_id' => 'required|exists:users,id',
         ]);
 
         $report = Report::create($validated);
-    return response()->json(Report::with('user')->find($report->id), 201);
+        return response()->json(Report::with('user')->find($report->id), 201);
     }
 
     public function update(Request $request, $id)
@@ -40,11 +43,15 @@ class ReportsController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|in:Product,Category,Inventory,Beneficiary,Order',
+            'type' => 'required|in:Product,Category,Inventory,Beneficiary,warehouse,Order',
             'start_date' => 'required|date',
             'end_date' => 'required|date',
             'filters' => 'nullable|json',
             'data' => 'nullable|json',
+            'format' => 'nullable|in:pdf,excel,csv',
+            'file_path' => 'nullable|string',
+            'status' => 'nullable|in:pending,processing,completed,failed',
+            'description' => 'nullable|string',
             'user_id' => 'required|exists:users,id',
         ]);
 
