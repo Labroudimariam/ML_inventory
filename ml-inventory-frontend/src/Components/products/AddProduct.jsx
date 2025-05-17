@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import { useNavigate } from "react-router-dom";
 import "./productForm.css";
-import NavbarTop from "../navbar/NavbarTop";
-import Navbar from "../navbar/Navbar";
+import LoadingSpinner from "../loading/Loading";
+import SuccessAlert from "../alerts/SuccessAlert";
+import ErrorAlert from "../alerts/ErrorAlert";
 
 const AddProduct = () => {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ const AddProduct = () => {
     expiry_date: "",
     status: "in-stock",
     description: "",
+    barcode: "",
     image: null
   });
   const [categories, setCategories] = useState([]);
@@ -26,18 +28,45 @@ const AddProduct = () => {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
+  const [basePath, setBasePath] = useState("");
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      setError("User not authenticated");
+      return;
+    }
+
+    // Set base path based on user role
+    switch(user.role.toLowerCase()) {
+      case 'admin': 
+        setBasePath('/admin-dashboard');
+        break;
+      case 'subadmin': 
+        setBasePath('/subadmin-dashboard');
+        break;
+      case 'storekeeper': 
+        setBasePath('/storekeeper-dashboard');
+        break;
+      default:
+        setBasePath('');
+    }
+
     const fetchData = async () => {
       try {
+        setLoading(true);
         const [categoriesRes, warehousesRes] = await Promise.all([
           axios.get("/categories"),
           axios.get("/warehouses")
         ]);
         setCategories(categoriesRes.data);
         setWarehouses(warehousesRes.data);
+        setSuccess("Form data loaded successfully");
+        setTimeout(() => setSuccess(""), 3000);
       } catch (err) {
-        setError("Failed to load required data");
+        setError(err.response?.data?.message || "Failed to load required data");
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
@@ -92,7 +121,7 @@ const AddProduct = () => {
       });
 
       setSuccess("Product added successfully!");
-      setTimeout(() => navigate("/products/list"), 2000);
+      setTimeout(() => navigate(`${basePath}/products/list`), 2000);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to add product");
     } finally {
@@ -100,14 +129,17 @@ const AddProduct = () => {
     }
   };
 
+  if (loading && !categories.length) {
+    return <LoadingSpinner />;
+  }
+
   return (
     <div className="product-form-container">
-      <NavbarTop />
-      <Navbar />
+      {/* Success and Error Alerts */}
+      {success && <SuccessAlert message={success} onClose={() => setSuccess("")} />}
+      {error && <ErrorAlert message={error} onClose={() => setError("")} />}
+
       <h2>Add New Product</h2>
-      
-      {error && <div className="alert alert-danger">{error}</div>}
-      {success && <div className="alert alert-success">{success}</div>}
 
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         <div className="form-row">
@@ -217,6 +249,18 @@ const AddProduct = () => {
           </div>
 
           <div className="form-group">
+            <label>Barcode</label>
+            <input
+              type="text"
+              name="barcode"
+              value={formData.barcode}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
             <label>Status</label>
             <input
               type="text"
@@ -226,16 +270,16 @@ const AddProduct = () => {
               className="status-display"
             />
           </div>
-        </div>
 
-        <div className="form-group">
-          <label>Expiry Date</label>
-          <input
-            type="date"
-            name="expiry_date"
-            value={formData.expiry_date}
-            onChange={handleChange}
-          />
+          <div className="form-group">
+            <label>Expiry Date</label>
+            <input
+              type="date"
+              name="expiry_date"
+              value={formData.expiry_date}
+              onChange={handleChange}
+            />
+          </div>
         </div>
 
         <div className="form-group">
@@ -269,7 +313,7 @@ const AddProduct = () => {
           </button>
           <button
             type="button"
-            onClick={() => navigate("/products/list")}
+            onClick={() => navigate(`${basePath}/products/list`)}
             className="btn btn-secondary"
           >
             Cancel

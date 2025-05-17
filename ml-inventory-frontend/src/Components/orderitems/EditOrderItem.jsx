@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import { useNavigate, useParams } from "react-router-dom";
-import NavbarTop from "../navbar/NavbarTop";
-import { Navbar } from "react-bootstrap";
+import LoadingSpinner from "../loading/Loading";
+import SuccessAlert from "../alerts/SuccessAlert";
+import ErrorAlert from "../alerts/ErrorAlert";
 
 const EditOrderItem = () => {
   const { id } = useParams();
@@ -19,8 +20,30 @@ const EditOrderItem = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [basePath, setBasePath] = useState("");
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      setError("User not authenticated");
+      return;
+    }
+
+    // Set base path based on user role
+    switch(user.role.toLowerCase()) {
+      case 'admin': 
+        setBasePath('/admin-dashboard');
+        break;
+      case 'subadmin': 
+        setBasePath('/subadmin-dashboard');
+        break;
+      case 'storekeeper': 
+        setBasePath('/storekeeper-dashboard');
+        break;
+      default:
+        setBasePath('');
+    }
+
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -71,6 +94,12 @@ const EditOrderItem = () => {
     setError("");
     setSuccess("");
 
+    if (!orderItem.order_id || !orderItem.product_id) {
+      setError("Please select both order and product");
+      setLoading(false);
+      return;
+    }
+
     if (orderItem.quantity <= 0) {
       setError("Quantity must be greater than 0");
       setLoading(false);
@@ -78,125 +107,124 @@ const EditOrderItem = () => {
     }
 
     try {
-      const response = await axios.put(`/order-items/${id}`, orderItem);
+      await axios.put(`/order-items/${id}`, orderItem);
       setSuccess("Order item updated successfully!");
-      setTimeout(() => navigate("/order-items/list"), 1500);
+      setTimeout(() => navigate(`${basePath}/order-items/list`), 1500);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to update order item");
+      if (err.response?.data?.errors) {
+        const errorMsg = Object.values(err.response.data.errors).flat().join(', ');
+        setError(errorMsg);
+      } else {
+        setError(err.response?.data?.message || "Failed to update order item");
+      }
     } finally {
       setLoading(false);
     }
   };
 
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
+  };
+
   if (loading && !orderItem.id) {
-    return <div>Loading order item data...</div>;
+    return <LoadingSpinner />;
   }
 
   return (
-    <div className="container mt-4">
-      <NavbarTop />
-      <Navbar />
-      <div className="card">
-        <div className="card-header">
-          <h2 className="mb-0">Edit Order Item</h2>
+    <div className="order-item-form-container">
+      {/* Success and Error Alerts */}
+      {success && <SuccessAlert message={success} onClose={() => setSuccess("")} />}
+      {error && <ErrorAlert message={error} onClose={() => setError("")} />}
+
+      <h2>Edit Order Item</h2>
+
+      <form onSubmit={handleSubmit}>
+        <div className="form-row">
+          <div className="form-group">
+            <label>Order*</label>
+            <select
+              name="order_id"
+              value={orderItem.order_id}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select Order</option>
+              {orders.map((order) => (
+                <option key={order.id} value={order.id}>
+                  Order #{order.order_number} - {order.beneficiary?.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label>Product*</label>
+            <select
+              name="product_id"
+              value={orderItem.product_id}
+              onChange={handleChange}
+              required
+            >
+              <option value="">Select Product</option>
+              {products.map((product) => (
+                <option key={product.id} value={product.id}>
+                  {product.name} ({product.unit}) - {formatCurrency(product.price)}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-        <div className="card-body">
-          {error && <div className="alert alert-danger">{error}</div>}
-          {success && <div className="alert alert-success">{success}</div>}
 
-          <form onSubmit={handleSubmit}>
-            <div className="row g-3">
-              <div className="col-md-6">
-                <label className="form-label">Order*</label>
-                <select
-                  className="form-select"
-                  name="order_id"
-                  value={orderItem.order_id}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Order</option>
-                  {orders.map((order) => (
-                    <option key={order.id} value={order.id}>
-                      Order #{order.id}
-                    </option>
-                  ))}
-                </select>
-              </div>
+        <div className="form-row">
+          <div className="form-group">
+            <label>Quantity*</label>
+            <input
+              type="number"
+              name="quantity"
+              min="1"
+              value={orderItem.quantity}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-              <div className="col-md-6">
-                <label className="form-label">Product*</label>
-                <select
-                  className="form-select"
-                  name="product_id"
-                  value={orderItem.product_id}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Product</option>
-                  {products.map((product) => (
-                    <option key={product.id} value={product.id}>
-                      {product.name} (${product.price})
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label">Quantity*</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  name="quantity"
-                  min="1"
-                  value={orderItem.quantity}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label">Unit Price</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  name="unit_price"
-                  value={orderItem.unit_price}
-                  readOnly
-                />
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label">Total Price</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  name="total_price"
-                  value={orderItem.total_price}
-                  readOnly
-                />
-              </div>
-
-              <div className="col-12">
-                <button 
-                  type="submit" 
-                  className="btn btn-primary"
-                  disabled={loading}
-                >
-                  {loading ? "Updating..." : "Update Order Item"}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary ms-2"
-                  onClick={() => navigate("/order-items/list")}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </form>
+          <div className="form-group">
+            <label>Unit Price</label>
+            <input
+              type="text"
+              name="unit_price"
+              value={formatCurrency(orderItem.unit_price)}
+              readOnly
+            />
+          </div>
         </div>
-      </div>
+
+        <div className="form-group">
+          <label>Total Price</label>
+          <input
+            type="text"
+            name="total_price"
+            value={formatCurrency(orderItem.total_price)}
+            readOnly
+          />
+        </div>
+
+        <div className="form-actions">
+          <button type="submit" disabled={loading} className="btn btn-primary">
+            {loading ? "Updating..." : "Update Order Item"}
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate(`${basePath}/order-items/list`)}
+            className="btn btn-secondary"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

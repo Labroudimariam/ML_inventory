@@ -1,0 +1,134 @@
+.inventory-list-container {
+  margin-top: 50px;
+}
+
+.inventory-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.inventory-list-header h2 {
+  color: #193773;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.inventory-list-container .header-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.inventory-list-container .filter-container {
+  position: relative;
+}
+
+.inventory-list-container .filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inventory-list-container .filter-select {
+  width: 180px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+  background-color: white;
+}
+
+.inventory-list-container .add-inventory-btn {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.inventory-list-container .inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.inventory-list-container .inventory-table tbody tr:hover {
+  background-color: #ffffff;
+}
+
+.inventory-list-container .inventory-table th,
+.inventory-list-container .inventory-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.inventory-list-container .inventory-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.inventory-list-container .action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.inventory-list-container .badg {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.inventory-list-container .badg-success {
+  background-color: #67f6ac;
+  color: #065f46;
+}
+
+.inventory-list-container .badg-danger {
+  background-color: #ff7d7d;
+  color: #b91c1c;
+}
+
+.inventory-list-container .no-inventory-message {
+  padding: 20px;
+  text-align: center;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+}
+
+
+
+/* Dark mode */
+html.dark .inventory-list-container {
+  background-color: #1f2937;
+  color: #f9fafb;
+  border: 2px solid #374151;
+  padding: 2rem;
+  border-radius: 10px;
+}
+
+html.dark .inventory-list-header h2 {
+  color: #f9fafb;
+}
+
+html.dark .inventory-table th {
+  background-color: #1f2937;
+  color: #f9fafb;
+}
+
+html.dark .inventory-table tbody tr:hover {
+  background-color: #374151;
+}
+
+html.dark .filter-select {
+  background-color: #374151;
+  color: #f9fafb;
+  border-color: #4b5563;
+}
+
+html.dark .no-inventory-message {
+  background-color: #374151;
+  color: #f9fafb;
+}
+

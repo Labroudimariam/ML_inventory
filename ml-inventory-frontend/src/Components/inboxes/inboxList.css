@@ -1,0 +1,196 @@
+/* inboxList.css */
+.inbox-container {
+  margin-top: 50px;
+}
+
+.inbox-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.inbox-header h2 {
+  color: #193773;
+  font-size: 1.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.inbox-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.search-filter {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-filter input {
+  padding: 8px 12px 8px 35px;
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+  width: 200px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  color: #6c757d;
+}
+
+.filter-group select {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+  background-color: white;
+  width: 180px;
+}
+
+.inbox-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.inbox-table th,
+.inbox-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.inbox-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.inbox-table th:hover {
+  background-color: #e9ecef;
+}
+
+.sortable-header {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.inbox-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.inbox-table tr.read {
+  background-color: #f8f9fa;
+}
+
+.inbox-table tr.unread {
+  background-color: #fff;
+  font-weight: 500;
+}
+
+/* .inbox-table tr.important {
+  background-color: #fff8e1;
+} */
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.status-badge.read {
+  background-color: #e6f7ff;
+  color: #1890ff;
+}
+
+.status-badge.unread {
+  background-color: #fff2e8;
+  color: #fa8c16;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-important {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #ffc107;
+  font-size: 16px;
+  padding: 5px;
+}
+
+.btn-important:hover {
+  color: #ffab00;
+}
+
+.starred {
+  color: #ffc107;
+}
+
+.no-messages {
+  padding: 20px;
+  text-align: center;
+  color: #6c757d;
+}
+
+/* Dark mode styles */
+html.dark .inbox-container {
+  background-color: #1f2937;
+  color: #f9fafb;
+  border: 2px solid #374151;
+  padding: 2rem;
+  border-radius: 10px;
+}
+
+html.dark .inbox-header h2 {
+  color: #f9fafb;
+}
+
+html.dark .inbox-table th {
+  background-color: #1f2937;
+  color: #f9fafb;
+}
+
+html.dark .inbox-table tbody tr {
+  background-color: #1f2937;
+  color: #f9fafb;
+}
+
+html.dark .inbox-table tbody tr:hover {
+  background-color: #374151;
+}
+
+
+html.dark .search-filter input,
+html.dark .filter-group select {
+  background-color: #374151;
+  color: #f9fafb;
+  border-color: #4b5563;
+}
+
+html.dark .search-icon {
+  color: #9ca3af;
+}
+
+html.dark .no-messages {
+  color: #9ca3af;
+}
+
+html.dark .inbox-table tr.unread{
+    background-color: #374151;
+    font-weight: 500;
+}

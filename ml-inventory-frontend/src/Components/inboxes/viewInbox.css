@@ -1,0 +1,208 @@
+.view-inbox-container {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.view-inbox-container .inbox-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+.view-inbox-container .inbox-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.view-inbox-container .btn {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.view-inbox-container .btn-back {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+.view-inbox-container .btn-back:hover {
+  background-color: #e0e0e0;
+}
+
+.view-inbox-container .btn-reply {
+  background-color: #007bff;
+  color: white;
+}
+
+.view-inbox-container .btn-reply:hover {
+  background-color: #0069d9;
+}
+
+.view-inbox-container .btn-important {
+  background-color: #ffc107;
+  color: white;
+}
+
+.view-inbox-container .btn-important:hover {
+  background-color: #e0a800;
+}
+
+.view-inbox-container .btn-delete {
+  background-color: #dc3545;
+  color: white;
+}
+
+.view-inbox-container .btn-delete:hover {
+  background-color: #c82333;
+}
+
+.view-inbox-container .starred {
+  color: #ffc107;
+}
+
+.view-inbox-container .inbox-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.view-inbox-container .meta-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.view-inbox-container .meta-label {
+  font-weight: 500;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.view-inbox-container .meta-value {
+  color: #333;
+}
+
+.view-inbox-container .status-read {
+  color: #28a745;
+}
+
+.view-inbox-container .status-unread {
+  color: #dc3545;
+  font-weight: 500;
+}
+
+.view-inbox-container .inbox-subject h3 {
+  color: #193773;
+  margin-bottom: 1.5rem;
+  font-size: 1.5rem;
+}
+
+.view-inbox-container .inbox-content {
+  margin-bottom: 2rem;
+}
+
+.view-inbox-container .message-body {
+  line-height: 1.6;
+  color: #333;
+}
+
+.view-inbox-container .message-body p {
+  margin-bottom: 1rem;
+}
+
+.view-inbox-container .inbox-attachments {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.view-inbox-container .inbox-attachments h4 {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #193773;
+}
+
+.view-inbox-container .attachment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.view-inbox-container .attachment-item {
+  color: #007bff;
+  text-decoration: none;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.view-inbox-container .attachment-item:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
+
+/* Dark mode styles */
+html.dark .view-inbox-container {
+  background-color: #1f2937;
+  border: 2px solid #374151;
+}
+
+html.dark .view-inbox-container .btn-back {
+  background-color: #374151;
+  color: #f9fafb;
+}
+
+html.dark .view-inbox-container .btn-back:hover {
+  background-color: #4b5563;
+}
+
+html.dark .view-inbox-container .inbox-header,
+html.dark .view-inbox-container .inbox-meta,
+html.dark .view-inbox-container .inbox-attachments {
+  border-color: #374151;
+}
+
+html.dark .view-inbox-container .meta-label {
+  color: #d1d5db;
+}
+
+html.dark .view-inbox-container .meta-value {
+  color: #f9fafb;
+}
+
+html.dark .view-inbox-container .inbox-subject h3,
+html.dark .view-inbox-container .inbox-attachments h4 {
+  color: #f9fafb;
+}
+
+html.dark .view-inbox-container .message-body {
+  color: #e8e8e8;
+}
+
+html.dark .view-inbox-container .attachment-item {
+  color: #3b82f6;
+}
+
+html.dark .view-inbox-container .attachment-item:hover {
+  color: #1d4ed8;
+}

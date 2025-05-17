@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import { useNavigate, useParams } from "react-router-dom";
-import NavbarTop from "../navbar/NavbarTop";
-import Navbar from "../navbar/Navbar";
+import LoadingSpinner from "../loading/Loading";
+import SuccessAlert from "../alerts/SuccessAlert";
+import ErrorAlert from "../alerts/ErrorAlert";
+import "./categoryForm.css";
 
 const EditCategory = () => {
   const { id } = useParams();
@@ -14,8 +16,26 @@ const EditCategory = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [basePath, setBasePath] = useState("");
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      setError("User not authenticated");
+      return;
+    }
+
+    switch(user.role.toLowerCase()) {
+      case 'admin': 
+        setBasePath('/admin-dashboard');
+        break;
+      case 'subadmin': 
+        setBasePath('/subadmin-dashboard');
+        break;
+      default:
+        setBasePath('');
+    }
+
     const fetchCategory = async () => {
       try {
         setLoading(true);
@@ -23,7 +43,6 @@ const EditCategory = () => {
         setCategory(response.data);
       } catch (err) {
         setError("Failed to fetch category data");
-        console.error("Fetch error:", err);
       } finally {
         setLoading(false);
       }
@@ -47,16 +66,10 @@ const EditCategory = () => {
     setSuccess("");
 
     try {
-      const response = await axios.put(`/categories/${id}`, category);
-      
-      if (response.data) {
-        setSuccess("Category updated successfully!");
-        setTimeout(() => navigate("/categories/list"), 1500);
-      } else {
-        setError("Update failed");
-      }
+      await axios.put(`/categories/${id}`, category);
+      setSuccess("Category updated successfully!");
+      setTimeout(() => navigate(`${basePath}/categories/list`), 1500);
     } catch (err) {
-      console.error("Update error:", err);
       if (err.response?.data?.errors) {
         const errorMsg = Object.values(err.response.data.errors).flat().join(', ');
         setError(errorMsg);
@@ -69,89 +82,52 @@ const EditCategory = () => {
   };
 
   if (loading && !category.name) {
-    return <div className="text-center my-5">Loading category data...</div>;
+    return <LoadingSpinner />;
   }
 
   return (
-    <div className="container mt-4">
-           <NavbarTop />
-            <Navbar />
-      <div className="card">
-        <div className="card-header">
-          <h2 className="mb-0">Edit Category</h2>
+    <div className="category-form-container">
+      {success && <SuccessAlert message={success} onClose={() => setSuccess("")} />}
+      {error && <ErrorAlert message={error} onClose={() => setError("")} />}
+
+      <h2>Edit Category</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>Name*</label>
+          <input
+            type="text"
+            name="name"
+            value={category.name}
+            onChange={handleChange}
+            required
+            maxLength="255"
+          />
         </div>
-        <div className="card-body">
-          {error && (
-            <div className="alert alert-danger alert-dismissible fade show">
-              {error}
-              <button type="button" className="btn-close" onClick={() => setError("")}></button>
-            </div>
-          )}
-          {success && (
-            <div className="alert alert-success alert-dismissible fade show">
-              {success}
-              <button 
-                type="button" 
-                className="btn-close" 
-                onClick={() => {
-                  setSuccess("");
-                  navigate("/categories/list");
-                }}
-              ></button>
-            </div>
-          )}
 
-          <form onSubmit={handleSubmit}>
-            <div className="row g-3">
-              <div className="col-md-12">
-                <label className="form-label">Name*</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="name"
-                  value={category.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="col-12">
-                <label className="form-label">Description</label>
-                <textarea
-                  className="form-control"
-                  name="description"
-                  value={category.description}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-12">
-                <button 
-                  type="submit" 
-                  className="btn btn-primary"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                      Updating...
-                    </>
-                  ) : (
-                    "Update Category"
-                  )}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary ms-2"
-                  onClick={() => navigate("/categories/list")}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </form>
+        <div className="form-group">
+          <label>Description</label>
+          <textarea
+            name="description"
+            value={category.description}
+            onChange={handleChange}
+            rows="3"
+            maxLength="500"
+          />
         </div>
-      </div>
+
+        <div className="form-actions">
+          <button type="submit" disabled={loading} className="btn btn-primary">
+            {loading ? "Updating..." : "Update Category"}
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate(`${basePath}/categories/list`)}
+            className="btn btn-secondary"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

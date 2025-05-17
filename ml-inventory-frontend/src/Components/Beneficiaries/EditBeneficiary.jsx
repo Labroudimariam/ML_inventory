@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
-import { useNavigate, useParams } from "react-router-dom";
-import Navbar from "../navbar/Navbar";
-import NavbarTop from "../navbar/NavbarTop";
+import {  useNavigate, useParams } from "react-router-dom";
+import LoadingSpinner from "../loading/Loading";
+import SuccessAlert from "../alerts/SuccessAlert";
+import ErrorAlert from "../alerts/ErrorAlert";
+import "./beneficiaryForm.css";
 
 const EditBeneficiary = () => {
   const { id } = useParams();
@@ -23,8 +25,30 @@ const EditBeneficiary = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [basePath, setBasePath] = useState("");
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      setError("User not authenticated");
+      return;
+    }
+
+    // Set base path based on user role
+    switch(user.role.toLowerCase()) {
+      case 'admin': 
+        setBasePath('/admin-dashboard');
+        break;
+      case 'subadmin': 
+        setBasePath('/subadmin-dashboard');
+        break;
+      case 'storekeeper': 
+        setBasePath('/storekeeper-dashboard');
+        break;
+      default:
+        setBasePath('');
+    }
+
     const fetchBeneficiary = async () => {
       try {
         setLoading(true);
@@ -32,7 +56,6 @@ const EditBeneficiary = () => {
         setBeneficiary(response.data);
       } catch (err) {
         setError("Failed to fetch beneficiary data");
-        console.error("Fetch error:", err);
       } finally {
         setLoading(false);
       }
@@ -55,17 +78,19 @@ const EditBeneficiary = () => {
     setError("");
     setSuccess("");
 
+    // Basic validation
+    if (!beneficiary.name || !beneficiary.email || !beneficiary.phone || !beneficiary.address || 
+        !beneficiary.city || !beneficiary.state || !beneficiary.country) {
+      setError("Please fill in all required fields");
+      setLoading(false);
+      return;
+    }
+
     try {
-      const response = await axios.put(`/beneficiaries/${id}`, beneficiary);
-      
-      if (response.data) {
-        setSuccess("Beneficiary updated successfully!");
-        setTimeout(() => navigate("/beneficiaries/list"), 1500);
-      } else {
-        setError("Update failed");
-      }
+      await axios.put(`/beneficiaries/${id}`, beneficiary);
+      setSuccess("Beneficiary updated successfully!");
+      setTimeout(() => navigate(`${basePath}/beneficiaries/list`), 1500);
     } catch (err) {
-      console.error("Update error:", err);
       if (err.response?.data?.errors) {
         const errorMsg = Object.values(err.response.data.errors).flat().join(', ');
         setError(errorMsg);
@@ -78,198 +103,171 @@ const EditBeneficiary = () => {
   };
 
   if (loading && !beneficiary.name) {
-    return <div className="text-center my-5">Loading beneficiary data...</div>;
+    return <LoadingSpinner />;
   }
 
   return (
-    <div className="container mt-4">
-           <NavbarTop />
-            <Navbar />
-      <div className="card">
-        <div className="card-header">
-          <h2 className="mb-0">Edit Beneficiary</h2>
+    <div className="beneficiary-form-container">
+      {/* Success and Error Alerts */}
+      {success && <SuccessAlert message={success} onClose={() => setSuccess("")} />}
+      {error && <ErrorAlert message={error} onClose={() => setError("")} />}
+
+      <h2>Edit Beneficiary</h2>
+
+      <form onSubmit={handleSubmit}>
+        <div className="form-row">
+          <div className="form-group">
+            <label>Full Name*</label>
+            <input
+              type="text"
+              name="name"
+              value={beneficiary.name}
+              onChange={handleChange}
+              required
+              maxLength="255"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Email*</label>
+            <input
+              type="email"
+              name="email"
+              value={beneficiary.email}
+              onChange={handleChange}
+              required
+              maxLength="255"
+            />
+          </div>
         </div>
-        <div className="card-body">
-          {error && (
-            <div className="alert alert-danger alert-dismissible fade show">
-              {error}
-              <button type="button" className="btn-close" onClick={() => setError("")}></button>
-            </div>
-          )}
-          {success && (
-            <div className="alert alert-success alert-dismissible fade show">
-              {success}
-              <button 
-                type="button" 
-                className="btn-close" 
-                onClick={() => {
-                  setSuccess("");
-                  navigate("/beneficiaries/list");
-                }}
-              ></button>
-            </div>
-          )}
 
-          <form onSubmit={handleSubmit}>
-            <div className="row g-3">
-              <div className="col-md-6">
-                <label className="form-label">Name*</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="name"
-                  value={beneficiary.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+        <div className="form-row">
+          <div className="form-group">
+            <label>Phone Number*</label>
+            <input
+              type="tel"
+              name="phone"
+              value={beneficiary.phone}
+              onChange={handleChange}
+              required
+              maxLength="20"
+            />
+          </div>
 
-              <div className="col-md-6">
-                <label className="form-label">Email*</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  name="email"
-                  value={beneficiary.email}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label">Phone*</label>
-                <input
-                  type="tel"
-                  className="form-control"
-                  name="phone"
-                  value={beneficiary.phone}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label">Gender*</label>
-                <select
-                  className="form-select"
-                  name="gender"
-                  value={beneficiary.gender}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-
-              <div className="col-12">
-                <label className="form-label">Address*</label>
-                <textarea
-                  className="form-control"
-                  name="address"
-                  value={beneficiary.address}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="col-md-4">
-                <label className="form-label">City*</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="city"
-                  value={beneficiary.city}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="col-md-4">
-                <label className="form-label">State*</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="state"
-                  value={beneficiary.state}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="col-md-4">
-                <label className="form-label">Country*</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="country"
-                  value={beneficiary.country}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label">Postal Code</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="postal_code"
-                  value={beneficiary.postal_code}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-md-6">
-                <label className="form-label">Number of Artificial Inseminations</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  name="nombre_insemination_artificielle"
-                  min="0"
-                  value={beneficiary.nombre_insemination_artificielle}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-12">
-                <label className="form-label">Additional Info</label>
-                <textarea
-                  className="form-control"
-                  name="additional_info"
-                  value={beneficiary.additional_info}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-12">
-                <button 
-                  type="submit" 
-                  className="btn btn-primary"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                      Updating...
-                    </>
-                  ) : (
-                    "Update Beneficiary"
-                  )}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary ms-2"
-                  onClick={() => navigate("/beneficiaries/list")}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </form>
+          <div className="form-group">
+            <label>Gender*</label>
+            <select
+              name="gender"
+              value={beneficiary.gender}
+              onChange={handleChange}
+              required
+            >
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
         </div>
-      </div>
+
+        <div className="form-group">
+          <label>Address*</label>
+          <textarea
+            name="address"
+            value={beneficiary.address}
+            onChange={handleChange}
+            required
+            maxLength="500"
+          />
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label>City*</label>
+            <input
+              type="text"
+              name="city"
+              value={beneficiary.city}
+              onChange={handleChange}
+              required
+              maxLength="100"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>State/Province*</label>
+            <input
+              type="text"
+              name="state"
+              value={beneficiary.state}
+              onChange={handleChange}
+              required
+              maxLength="100"
+            />
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label>Country*</label>
+            <input
+              type="text"
+              name="country"
+              value={beneficiary.country}
+              onChange={handleChange}
+              required
+              maxLength="100"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Postal/Zip Code</label>
+            <input
+              type="text"
+              name="postal_code"
+              value={beneficiary.postal_code}
+              onChange={handleChange}
+              maxLength="20"
+            />
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
+            <label>Artificial Insemination Count</label>
+            <input
+              type="number"
+              name="nombre_insemination_artificielle"
+              min="0"
+              value={beneficiary.nombre_insemination_artificielle}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+
+        <div className="form-group">
+          <label>Additional Information</label>
+          <textarea
+            name="additional_info"
+            value={beneficiary.additional_info}
+            onChange={handleChange}
+            rows="3"
+            maxLength="1000"
+          />
+        </div>
+
+        <div className="form-actions">
+          <button type="submit" disabled={loading} className="btn btn-primary">
+            {loading ? "Updating..." : "Update Beneficiary"}
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate(`${basePath}/beneficiaries/list`)}
+            className="btn btn-secondary"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

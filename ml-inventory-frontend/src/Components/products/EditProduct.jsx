@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import { useNavigate, useParams } from "react-router-dom";
 import "./productForm.css";
-import NavbarTop from "../navbar/NavbarTop";
-import Navbar from "../navbar/Navbar";
+import LoadingSpinner from "../loading/Loading";
+import SuccessAlert from "../alerts/SuccessAlert";
+import ErrorAlert from "../alerts/ErrorAlert";
 
 const EditProduct = () => {
   const { id } = useParams();
@@ -19,6 +20,7 @@ const EditProduct = () => {
     expiry_date: "",
     status: "in-stock",
     description: "",
+    barcode: "",
     image: null
   });
   const [originalImage, setOriginalImage] = useState("");
@@ -28,8 +30,31 @@ const EditProduct = () => {
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [imagePreview, setImagePreview] = useState("");
+  const [basePath, setBasePath] = useState("");
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      setError("User not authenticated");
+      setLoading(false);
+      return;
+    }
+
+    // Set base path based on user role
+    switch(user.role.toLowerCase()) {
+      case 'admin': 
+        setBasePath('/admin-dashboard');
+        break;
+      case 'subadmin': 
+        setBasePath('/subadmin-dashboard');
+        break;
+      case 'storekeeper': 
+        setBasePath('/storekeeper-dashboard');
+        break;
+      default:
+        setBasePath('');
+    }
+
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -43,13 +68,15 @@ const EditProduct = () => {
         setOriginalImage(productRes.data.image || "");
         setCategories(categoriesRes.data);
         setWarehouses(warehousesRes.data);
+        setSuccess("Product data loaded successfully");
+        setTimeout(() => setSuccess(""), 3000);
 
         if (productRes.data.image_url) {
           setImagePreview(productRes.data.image_url);
         }
         
       } catch (err) {
-        setError("Failed to load product data");
+        setError(err.response?.data?.message || "Failed to load product data");
       } finally {
         setLoading(false);
       }
@@ -97,15 +124,14 @@ const EditProduct = () => {
       data.append("_method", "PUT");
 
       for (const key in product) {
-  if (key === "image") {
-    if (product.image instanceof File) {
-      data.append("image", product.image);
-    }
-  } else if (product[key] !== null && product[key] !== "") {
-    data.append(key, product[key]);
-  }
-}
-
+        if (key === "image") {
+          if (product.image instanceof File) {
+            data.append("image", product.image);
+          }
+        } else if (product[key] !== null && product[key] !== "") {
+          data.append(key, product[key]);
+        }
+      }
 
       const response = await axios.post(`/products/${id}`, data, {
         headers: {
@@ -114,7 +140,7 @@ const EditProduct = () => {
       });
 
       setSuccess("Product updated successfully!");
-      setTimeout(() => navigate("/products/list"), 2000);
+      setTimeout(() => navigate(`${basePath}/products/list`), 2000);
     } catch (err) {
       setError(err.response?.data?.message || "Failed to update product");
     } finally {
@@ -123,17 +149,16 @@ const EditProduct = () => {
   };
 
   if (loading && !product.name) {
-    return <div className="loading-spinner">Loading...</div>;
+    return <LoadingSpinner />;
   }
 
   return (
     <div className="product-form-container">
-      <NavbarTop />
-      <Navbar />
+      {/* Success and Error Alerts */}
+      {success && <SuccessAlert message={success} onClose={() => setSuccess("")} />}
+      {error && <ErrorAlert message={error} onClose={() => setError("")} />}
+
       <h2>Edit Product</h2>
-      
-      {error && <div className="alert alert-danger">{error}</div>}
-      {success && <div className="alert alert-success">{success}</div>}
 
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         <div className="form-row">
@@ -243,6 +268,18 @@ const EditProduct = () => {
           </div>
 
           <div className="form-group">
+            <label>Barcode</label>
+            <input
+              type="text"
+              name="barcode"
+              value={product.barcode}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+
+        <div className="form-row">
+          <div className="form-group">
             <label>Status</label>
             <input
               type="text"
@@ -252,16 +289,16 @@ const EditProduct = () => {
               className="status-display"
             />
           </div>
-        </div>
 
-        <div className="form-group">
-          <label>Expiry Date</label>
-          <input
-            type="date"
-            name="expiry_date"
-            value={product.expiry_date}
-            onChange={handleChange}
-          />
+          <div className="form-group">
+            <label>Expiry Date</label>
+            <input
+              type="date"
+              name="expiry_date"
+              value={product.expiry_date}
+              onChange={handleChange}
+            />
+          </div>
         </div>
 
         <div className="form-group">
@@ -300,7 +337,7 @@ const EditProduct = () => {
           </button>
           <button
             type="button"
-            onClick={() => navigate("/products/list")}
+            onClick={() => navigate(`${basePath}/products/list`)}
             className="btn btn-secondary"
           >
             Cancel

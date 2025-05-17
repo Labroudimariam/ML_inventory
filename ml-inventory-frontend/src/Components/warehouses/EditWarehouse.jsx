@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import { useNavigate, useParams } from "react-router-dom";
-import NavbarTop from "../navbar/NavbarTop";
-import Navbar from "../navbar/Navbar";
+import LoadingSpinner from "../loading/Loading";
+import SuccessAlert from "../alerts/SuccessAlert";
+import ErrorAlert from "../alerts/ErrorAlert";
+import "./warehouseForm.css";
 
 const EditWarehouse = () => {
   const { id } = useParams();
@@ -10,27 +12,55 @@ const EditWarehouse = () => {
   const [warehouse, setWarehouse] = useState({
     name: "",
     location: "",
-    description: ""
+    description: "",
+    capacity: "",
+    current_stock: "",
+    user_id: "",
   });
+  const [users, setUsers] = useState([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [basePath, setBasePath] = useState("");
 
   useEffect(() => {
-    const fetchWarehouse = async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      setError("User not authenticated");
+      return;
+    }
+
+    switch(user.role.toLowerCase()) {
+      case 'admin': 
+        setBasePath('/admin-dashboard');
+        break;
+      case 'subadmin': 
+        setBasePath('/subadmin-dashboard');
+        break;
+      case 'storekeeper': 
+        setBasePath('/storekeeper-dashboard');
+        break;
+      default:
+        setBasePath('');
+    }
+
+    const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`/warehouses/${id}`);
-        setWarehouse(response.data);
+        const [warehouseRes, usersRes] = await Promise.all([
+          axios.get(`/warehouses/${id}`),
+          axios.get("/users?role=storekeeper"),
+        ]);
+        setWarehouse(warehouseRes.data);
+        setUsers(usersRes.data);
       } catch (err) {
         setError("Failed to fetch warehouse data");
-        console.error("Fetch error:", err);
       } finally {
         setLoading(false);
       }
     };
-    
-    fetchWarehouse();
+
+    fetchData();
   }, [id]);
 
   const handleChange = (e) => {
@@ -47,23 +77,11 @@ const EditWarehouse = () => {
     setError("");
     setSuccess("");
 
-    if (!warehouse.name) {
-      setError("Name is required");
-      setLoading(false);
-      return;
-    }
-
     try {
-      const response = await axios.put(`/warehouses/${id}`, warehouse);
-      
-      if (response.data) {
-        setSuccess("Warehouse updated successfully!");
-        setTimeout(() => navigate("/warehouses/list"), 1500);
-      } else {
-        setError(response.data.message || "Update failed");
-      }
+      await axios.put(`/warehouses/${id}`, warehouse);
+      setSuccess("Warehouse updated successfully!");
+      setTimeout(() => navigate(`${basePath}/warehouses/list`), 1500);
     } catch (err) {
-      console.error("Update error:", err);
       if (err.response?.data?.errors) {
         const errorMsg = Object.values(err.response.data.errors).flat().join(', ');
         setError(errorMsg);
@@ -76,101 +94,105 @@ const EditWarehouse = () => {
   };
 
   if (loading && !warehouse.name) {
-    return <div className="text-center my-5">Loading warehouse data...</div>;
+    return <LoadingSpinner />;
   }
 
   return (
-    <div className="container mt-4">
-      <NavbarTop />
-      <Navbar />
-      <div className="card">
-        <div className="card-header">
-          <h2 className="mb-0">Edit Warehouse</h2>
+    <div className="warehouse-form-container">
+      {success && <SuccessAlert message={success} onClose={() => setSuccess("")} />}
+      {error && <ErrorAlert message={error} onClose={() => setError("")} />}
+
+      <h2>Edit Warehouse</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="form-row">
+          <div className="form-group">
+            <label>Name*</label>
+            <input
+              type="text"
+              name="name"
+              value={warehouse.name}
+              onChange={handleChange}
+              required
+              maxLength="255"
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Location</label>
+            <input
+              type="text"
+              name="location"
+              value={warehouse.location}
+              onChange={handleChange}
+              maxLength="255"
+            />
+          </div>
         </div>
-        <div className="card-body">
-          {error && (
-            <div className="alert alert-danger alert-dismissible fade show">
-              {error}
-              <button type="button" className="btn-close" onClick={() => setError("")}></button>
-            </div>
-          )}
-          {success && (
-            <div className="alert alert-success alert-dismissible fade show">
-              {success}
-              <button 
-                type="button" 
-                className="btn-close" 
-                onClick={() => {
-                  setSuccess("");
-                  navigate("/warehouses/list");
-                }}
-              ></button>
-            </div>
-          )}
 
-          <form onSubmit={handleSubmit}>
-            <div className="row g-3">
-              <div className="col-md-6">
-                <label className="form-label">Name*</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="name"
-                  value={warehouse.name}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+        <div className="form-row">
+          <div className="form-group">
+            <label>Capacity</label>
+            <input
+              type="number"
+              name="capacity"
+              min="0"
+              value={warehouse.capacity}
+              onChange={handleChange}
+            />
+          </div>
 
-              <div className="col-md-6">
-                <label className="form-label">Location</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  name="location"
-                  value={warehouse.location}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-12">
-                <label className="form-label">Description</label>
-                <textarea
-                  className="form-control"
-                  name="description"
-                  rows="3"
-                  value={warehouse.description}
-                  onChange={handleChange}
-                />
-              </div>
-
-              <div className="col-12">
-                <button 
-                  type="submit" 
-                  className="btn btn-primary"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                      Updating...
-                    </>
-                  ) : (
-                    "Update Warehouse"
-                  )}
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary ms-2"
-                  onClick={() => navigate("/warehouses/list")}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-          </form>
+          <div className="form-group">
+            <label>Current Stock</label>
+            <input
+              type="number"
+              name="current_stock"
+              min="0"
+              value={warehouse.current_stock}
+              onChange={handleChange}
+            />
+          </div>
         </div>
-      </div>
+
+        <div className="form-group">
+          <label>Storekeeper</label>
+          <select
+            name="user_id"
+            value={warehouse.user_id}
+            onChange={handleChange}
+          >
+            <option value="">Select Storekeeper</option>
+            {users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.name} ({user.email})
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div className="form-group">
+          <label>Description</label>
+          <textarea
+            name="description"
+            value={warehouse.description}
+            onChange={handleChange}
+            rows="3"
+            maxLength="500"
+          />
+        </div>
+
+        <div className="form-actions">
+          <button type="submit" disabled={loading} className="btn btn-primary">
+            {loading ? "Updating..." : "Update Warehouse"}
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate(`${basePath}/warehouses/list`)}
+            className="btn btn-secondary"
+          >
+            Cancel
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

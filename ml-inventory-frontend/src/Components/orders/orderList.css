@@ -1,0 +1,134 @@
+.order-list-container {
+  margin-top: 50px;
+}
+
+.order-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.order-list-header h2 {
+  color: #193773;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.filter-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-container select {
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+}
+
+.add-order-btn {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.order-table th,
+.order-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.order-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.order-table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.badge {
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.badge-warning {
+  background-color: #fce37e;
+  color: #92400e;
+}
+
+.badge-info {
+  background-color: #7ed3fc;
+  color: #065f46;
+}
+
+.badge-primary {
+  background-color: #a5b4fc;
+  color: #3730a3;
+}
+
+.badge-success {
+  background-color: #67f6ac;
+  color: #065f46;
+}
+
+.badge-danger {
+  background-color: #ff7d7d;
+  color: #b91c1c;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+/* Dark mode styles */
+html.dark .order-list-container {
+  background-color: #1f2937;
+  color: #f9fafb;
+  border: 2px solid #374151;
+  padding: 2rem;
+  border-radius: 10px;
+}
+
+html.dark .order-list-header h2 {
+  color: #f9fafb;
+}
+
+html.dark .filter-container select {
+  background-color: #374151;
+  color: #f9fafb;
+  border-color: #4b5563;
+}
+
+html.dark .order-table th {
+  background-color: #1f2937;
+  color: #f9fafb;
+}
+
+html.dark .order-table tbody tr:hover {
+  background-color: #374151;
+}
+
+html.dark .order-table td {
+  color: #f9fafb;
+}

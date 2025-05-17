@@ -1,27 +1,56 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
 import { Link } from "react-router-dom";
-import Navbar from "../navbar/Navbar";
-import { FaRegTrashAlt, FaRegEdit } from "react-icons/fa";
+import { FaRegTrashAlt, FaRegEdit,FaPlus } from "react-icons/fa";
 import { GrView } from "react-icons/gr";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { Dropdown } from 'react-bootstrap';
 import "./productList.css";
-import NavbarTop from "../navbar/NavbarTop";
+import LoadingSpinner from "../loading/Loading";
+import SuccessAlert from "../alerts/SuccessAlert";
+import ErrorAlert from "../alerts/ErrorAlert";
 
 const ProductList = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [categories, setCategories] = useState([]);
   const [warehouses, setWarehouses] = useState([]);
   const [activeFilter, setActiveFilter] = useState(null);
   const [filterValue, setFilterValue] = useState("all");
+  const [basePath, setBasePath] = useState("");
+  
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1);
+  const [productsPerPage] = useState(4);
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) {
+      setError("User not authenticated");
+      setLoading(false);
+      return;
+    }
+
+    // Set base path based on user role
+    switch(user.role.toLowerCase()) {
+      case 'admin': 
+        setBasePath('/admin-dashboard');
+        break;
+      case 'subadmin': 
+        setBasePath('/subadmin-dashboard');
+        break;
+      case 'storekeeper': 
+        setBasePath('/storekeeper-dashboard');
+        break;
+      default:
+        setBasePath('');
+    }
+
     const fetchData = async () => {
       try {
-        const user = JSON.parse(localStorage.getItem("user"));
         if (!["admin", "subadmin", "storekeeper"].includes(user?.role)) {
           setError("You don't have permission to view products");
           setLoading(false);
@@ -38,6 +67,8 @@ const ProductList = () => {
         setFilteredProducts(productsRes.data);
         setCategories(categoriesRes.data);
         setWarehouses(warehousesRes.data);
+        setSuccess("Products loaded successfully");
+        setTimeout(() => setSuccess(""), 3000);
       } catch (error) {
         setError(error.response?.data?.message || "Failed to fetch data.");
       } finally {
@@ -51,6 +82,7 @@ const ProductList = () => {
   useEffect(() => {
     if (!activeFilter) {
       setFilteredProducts(products);
+      setCurrentPage(1); // Reset to first page when filters change
       return;
     }
 
@@ -58,6 +90,7 @@ const ProductList = () => {
     
     if (filterValue === "all") {
       setFilteredProducts(products);
+      setCurrentPage(1); // Reset to first page when filters change
       return;
     }
     
@@ -74,7 +107,16 @@ const ProductList = () => {
     }
     
     setFilteredProducts(result);
+    setCurrentPage(1); // Reset to first page when filters change
   }, [activeFilter, filterValue, products]);
+
+  // Get current products
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  // Change page
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const handleFilterSelect = (filterType) => {
     setActiveFilter(filterType);
@@ -95,6 +137,8 @@ const ProductList = () => {
       try {
         await axios.delete(`/products/${id}`);
         setProducts(products.filter((product) => product.id !== id));
+        setSuccess("Product deleted successfully");
+        setTimeout(() => setSuccess(""), 3000);
       } catch (error) {
         setError(error.response?.data?.message || "Failed to delete product.");
       }
@@ -165,10 +209,16 @@ const ProductList = () => {
     return null;
   };
 
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
   return (
-    <div className="product-list-container">
-      <NavbarTop />
-      <Navbar />
+    <div className="product-list-container ">
+      {/* Success and Error Alerts */}
+      {success && <SuccessAlert message={success} onClose={() => setSuccess("")} />}
+      {error && <ErrorAlert message={error} onClose={() => setError("")} />}
+
       <div className="product-list-header">
         <h2>Product Inventory</h2>
         <div className="header-controls">
@@ -189,87 +239,115 @@ const ProductList = () => {
               {renderFilterInput()}
             </div>
           </div>
-          <Link to="/product/add" className="btn btn-primary add-product-btn">
-            + Add Product
+          <Link to={`${basePath}/product/add`} className="btn btn-primary add-product-btn">
+            <FaPlus /> Add Product
           </Link>
         </div>
       </div>
 
-      {error && <div className="alert alert-danger">{error}</div>}
-
-      {loading ? (
-        <div className="loading-spinner">
-          <div className="spinner-border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-        </div>
-      ) : (
-        <div className="table-responsive">
-          <table className="product-table">
-            <thead>
-              <tr>
-                <th>Image</th>
-                <th>Name</th>
-                <th>Category</th>
-                <th>Warehouse</th>
-                <th>Quantity</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th>Actions</th>
+      <div className="table-responsive">
+        <table className="product-table">
+          <thead>
+            <tr>
+              <th>Image</th>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Warehouse</th>
+              <th>Quantity</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {currentProducts.map((product) => (
+              <tr key={product.id}>
+                <td>
+                  <img
+                    src={product.image_url || "/unknown_product.jpeg"}
+                    alt={product.name}
+                    className="product-thumbnail"
+                    onError={(e) => {
+                      e.target.src = "/unknown_product.jpeg";
+                    }}
+                  />
+                </td>
+                <td>{product.name}</td>
+                <td>{product.category?.name}</td>
+                <td>{product.warehouse?.name}</td>
+                <td>{product.quantity} {product.unit}</td>
+                <td>${product.price}</td>
+                <td>{getStatusBadge(product.status)}</td>
+                <td>
+                  <div className="action-buttons">
+                    <Link
+                      to={`${basePath}/product/edit/${product.id}`}
+                      className="btn btn-sm btn-outline-primary"
+                    >
+                      <FaRegEdit />
+                    </Link>
+                    <Link
+                      to={`${basePath}/product/details/${product.id}`}
+                      className="btn btn-sm btn-outline-info"
+                    >
+                      <GrView />
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(product.id)}
+                      className="btn btn-sm btn-outline-danger"
+                    >
+                      <FaRegTrashAlt />
+                    </button>
+                  </div>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {filteredProducts.map((product) => (
-                <tr key={product.id}>
-                  <td>
-                    <img
-                      src={product.image_url || "/unknown_product.jpeg"}
-                      alt={product.name}
-                      className="product-thumbnail"
-                      onError={(e) => {
-                        e.target.src = "/unknown_product.jpeg";
-                      }}
-                    />
-                  </td>
-                  <td>{product.name}</td>
-                  <td>{product.category?.name}</td>
-                  <td>{product.warehouse?.name}</td>
-                  <td>{product.quantity} {product.unit}</td>
-                  <td>${product.price}</td>
-                  <td>{getStatusBadge(product.status)}</td>
-                  <td>
-                    <div className="action-buttons">
-                      <Link
-                        to={`/product/edit/${product.id}`}
-                        className="btn btn-sm btn-outline-primary"
-                      >
-                        <FaRegEdit />
-                      </Link>
-                      <Link
-                        to={`/product/details/${product.id}`}
-                        className="btn btn-sm btn-outline-info"
-                      >
-                        <GrView />
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(product.id)}
-                        className="btn btn-sm btn-outline-danger"
-                      >
-                        <FaRegTrashAlt />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {filteredProducts.length === 0 && (
-            <div className="no-products-message">
-              No products found matching your filters.
-            </div>
-          )}
-        </div>
-      )}
+            ))}
+          </tbody>
+        </table>
+        {filteredProducts.length === 0 && (
+          <div className="no-products-message">
+            No products found matching your filters.
+          </div>
+        )}
+      </div>
+
+     {/* Pagination */}
+{filteredProducts.length > productsPerPage && (
+  <nav className="pagination-container">
+    <ul className="pagination">
+      <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+        <button 
+          className="page-link" 
+          onClick={() => paginate(currentPage - 1)}
+          disabled={currentPage === 1}
+        >
+          <FaChevronLeft />
+        </button>
+      </li>
+      
+      {Array.from({ length: Math.ceil(filteredProducts.length / productsPerPage) }).map((_, index) => (
+        <li key={index} className={`page-item ${currentPage === index + 1 ? 'active' : ''}`}>
+          <button 
+            className="page-link" 
+            onClick={() => paginate(index + 1)}
+          >
+            {index + 1}
+          </button>
+        </li>
+      ))}
+      
+      <li className={`page-item ${currentPage === Math.ceil(filteredProducts.length / productsPerPage) ? 'disabled' : ''}`}>
+        <button 
+          className="page-link" 
+          onClick={() => paginate(currentPage + 1)}
+          disabled={currentPage === Math.ceil(filteredProducts.length / productsPerPage)}
+        >
+          <FaChevronRight />
+        </button>
+      </li>
+    </ul>
+  </nav>
+)}
     </div>
   );
 };

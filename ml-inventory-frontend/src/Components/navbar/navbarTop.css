@@ -7,7 +7,7 @@
   position: fixed;
   top: 0;
   right: 0;
-  background-color: #fb1515;
+  background-color: #ffffff;
   transition: background-color 0.3s ease, color 0.3s ease;
   z-index: 1000;
 }
@@ -22,12 +22,11 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 100px;
 }
 
 .navbar-logo-img {
   height: auto;
-  max-width: 100px;
+  max-width: 122px;
 }
 
 .navbar-search {
@@ -54,7 +53,6 @@
 
 .navbar-search input:focus {
   outline: 1px solid #3b82f6;
-  background-color: #e0f2fe;
 }
 
 .navbar-top.dark .navbar-search input:focus {
@@ -132,64 +130,26 @@
   transform: scale(1.05);
 }
 
-/* === Extra small phones === */
-@media (max-width: 400px) {
-  .navbar-top {
-    padding: 10px 16px;
-    flex-direction: column;
-    align-items: flex-start;
-  }
 
-  .navbar-left {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    width: 100%;
-  }
-
-  .navbar-logo-img {
-    max-width: 70px;
-  }
-
-  .navbar-search {
-    width: 100%;
-  }
-
-  .navbar-search input {
-    font-size: 13px;
-    padding-left: 36px;
-  }
-
-  .navbar-icons {
-    width: 100%;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 10px;
-  }
-}
-
-/* === Phones only === */
+/* === Phones and small screens (hide logo and search) === */
 @media (max-width: 600px) {
-  .navbar-top {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .navbar-left {
-    width: 100%;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-
+  .navbar-logo-img,
   .navbar-search {
-    width: 100%;
+    display: none;
   }
-
+  
+  .navbar-top {
+    padding: 10px 15px;
+    justify-content: flex-end; /* Push icons to the right */
+  }
+  
+  .navbar-left {
+    display: none; /* Hide the entire left section */
+  }
+  
   .navbar-icons {
-    width: 100%;
-    justify-content: flex-end;
-    margin-top: 10px;
+    width: auto; /* Let icons take only needed space */
+    margin-top: 0;
   }
 }
 

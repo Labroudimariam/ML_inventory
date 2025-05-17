@@ -62,6 +62,26 @@ class InboxController extends Controller
         return response()->json(['message' => 'Marked as read.']);
     }
 
+    // Toggle important status of a message
+    public function toggleImportant($id, Request $request)
+    {
+        $inbox = Inbox::where('id', $id)
+            ->where('user_id', $request->user()->id)
+            ->first();
+
+        if (!$inbox) {
+            return response()->json(['message' => 'Message not found or unauthorized'], 404);
+        }
+
+        $inbox->is_important = !$inbox->is_important;
+        $inbox->save();
+
+        return response()->json([
+            'message' => 'Importance status updated',
+            'is_important' => $inbox->is_important
+        ]);
+    }
+
     // Store a new inbox message
     public function store(Request $request)
     {
@@ -72,7 +92,6 @@ class InboxController extends Controller
             'message' => 'required|string',
             'read_at' => 'nullable|date',
             'is_important' => 'boolean',
-
         ]);
 
         $inbox = Inbox::create($validated);

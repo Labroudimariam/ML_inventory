@@ -1,0 +1,145 @@
+.report-list-container {
+  margin-top: 50px;
+}
+
+.report-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.report-list-header h2 {
+  color: #193773;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.filter-container {
+  position: relative;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter-toggle {
+  min-width: 120px;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filter-toggle::after {
+  margin-left: 10px;
+}
+
+.filter-menu {
+  position: absolute;
+  z-index: 1000;
+}
+
+.filter-select {
+  width: 180px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+  background-color: white;
+}
+
+.add-report-btn {
+  white-space: nowrap;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.report-table tbody tr:hover {
+  background-color: #ffffff;
+}
+
+.report-table th,
+.report-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.report-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.report-description {
+  max-width: 250px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.format-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.no-reports-message {
+  padding: 20px;
+  text-align: center;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  margin-top: 20px;
+}
+
+
+/* darkmode */
+
+html.dark .report-list-container {
+  background-color: #1f2937;
+  color: #f9fafb;
+  border: 2px solid #374151;
+  padding: 2rem;
+  border-radius: 10px;
+}
+html.dark .report-list-header {
+  background-color: #1f2937;
+  margin-bottom: 50px;
+}
+html.dark .report-list-header h2 {
+  color: #f9fafb;
+}
+html.dark .report-table th {
+  background-color: #1f2937;
+  color: #f9fafb;
+}
+html.dark .report-table tbody tr:hover {
+  background-color: #374151;
+}
+
+html.dark .filter-select {
+  background-color: #374151;
+  color: #f9fafb;
+  border: 1px solid #4b5563;
+}
+html.dark .filter-menu {
+  background-color: #374151;
+  color: #f9fafb;
+  border: 1px solid #4b5563;
+}
+

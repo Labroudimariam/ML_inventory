@@ -1,3 +1,4 @@
+
 .admin-dashboard {
   padding: 2rem;
   font-family: Arial, sans-serif;
@@ -5,9 +6,18 @@
   min-height: 100vh;
   margin-left: 200px;
 }
+html.dark .admin-dashboard {
+  background-color: #1f2937;
+}
 
 .admin-dashboard h1 {
   font-size: 2rem;
   color: #333;
   margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .admin-dashboard {
+    margin-left: 0;
+  }
 }

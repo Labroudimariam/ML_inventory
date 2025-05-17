@@ -1,134 +1,134 @@
 .profile-container {
-    max-width: 1000px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: #fff;
-    border-radius: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-    font-family: 'Segoe UI', sans-serif;
-  }
-  
-  .profile-header h1 {
-    font-size: 2rem;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
-    color: #1e1e1e;
-  }
-  
-  .profile-content {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-  
-  .profile-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-  }
-  
-  .profile-actions .btn {
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px;
-    text-decoration: none;
-    font-weight: 500;
-    font-size: 0.95rem;
-    transition: background-color 0.3s ease;
-  }
-  
-  .btn-primary {
-    background-color: #3d63ea;
-    color: white;
-  }
-  
-  .btn-primary:hover {
-    background-color: #2e4acb;
-  }
-  
-  .btn-secondary {
-    background-color: #f0f0f0;
-    color: #333;
-  }
-  
-  .btn-secondary:hover {
-    background-color: #e2e2e2;
-  }
-  
-  .profile-info {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-  }
-  
-  .profile-picture img {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 3px solid #e2e8f0;
-  }
-  
-  .profile-details {
-    flex-grow: 1;
-  }
-  
-  .profile-details h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-  }
-  
-  .profile-details p {
-    margin: 0.3rem 0;
-    font-size: 0.95rem;
-    color: #4a4a4a;
-  }
-  
-  .profile-details span {
-    font-weight: 500;
-    color: #1f1f1f;
-  }
-  
-  .additional-info {
-    margin-top: 1rem;
-  }
-  
-  .additional-info h3 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    font-weight: 600;
-    color: #333;
-  }
-  
-  .info-grid {
-    display: flex;
-    gap: 3rem;
-  }
-  
-  .info-grid p {
-    margin: 0.4rem 0;
-    font-size: 0.95rem;
-    color: #444;
-  }
-  
-  .info-grid span {
-    font-weight: 500;
-    color: #222;
-  }
-  
-  .alert {
-    background-color: #ffe0e0;
-    padding: 1rem;
-    color: #d8000c;
-    border-left: 4px solid #d8000c;
-    margin-bottom: 1rem;
-    border-radius: 8px;
-  }
-  
-  .loading,
-  .error {
-    text-align: center;
-    font-size: 1.2rem;
-    margin-top: 2rem;
-  }
-  
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.profile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.profile-header h1 {
+  color: #193773;
+  font-size: 1.8rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.profile-content {
+  display: flex;
+  gap: 30px;
+}
+
+.profile-image-section {
+  flex: 1;
+  max-width: 300px;
+}
+
+.image-container {
+  margin-bottom: 1.5rem;
+}
+
+.profile-image {
+  width: 100%;
+  max-width: 250px;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.profile-basic-info {
+  padding: 1rem 0;
+}
+
+.profile-basic-info h2 {
+  margin: 0 0 0.5rem 0;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.profile-details {
+  flex: 2;
+}
+
+.details-section {
+  margin-bottom: 2rem;
+}
+
+.details-section h3 {
+  color: #193773;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+
+.info-row {
+  display: flex;
+  margin-bottom: 0.8rem;
+}
+
+.info-label {
+  font-weight: 500;
+  color: #555;
+  min-width: 150px;
+}
+
+.info-value {
+  color: #333;
+}
+
+.error-message {
+  color: #dc3545;
+  text-align: center;
+  padding: 2rem;
+}
+.user-role span{
+    margin-right: 15px;
+}
+
+/* Dark mode styles */
+html.dark .profile-container {
+  background-color: #1f2937;
+  border: 2px solid #374151;
+}
+
+html.dark .profile-header h1,
+html.dark .details-section h3 {
+  color: #f9fafb;
+}
+
+html.dark .profile-header {
+  border-bottom-color: #4b5563;
+}
+
+html.dark .profile-basic-info h2,
+html.dark .info-value {
+  color: #e8e8e8;
+}
+
+html.dark .info-label {
+  color: #9ca3af;
+}
+
+html.dark .profile-image {
+  border-color: #4b5563;
+}
+
+html.dark .details-section h3 {
+  border-bottom-color: #4b5563;
+}

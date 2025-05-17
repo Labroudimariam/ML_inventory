@@ -2,7 +2,7 @@
 .sidebar {
   width: 200px;
   height: calc(100vh - 68px);
-  background-color: #42c90d;
+  background-color: #ffffff;
   padding: 1.5rem 1rem;
   color: #202224;
   position: fixed;
@@ -135,14 +135,14 @@ html.dark .nav-bottom {
 .mobile-menu-button {
   display: none;
   position: fixed;
-  top: 16px;
-  left: 16px;
+  top: 6px;
+  left: 8px;
   z-index: 1100;
-  background: #4880FF;
-  color: white;
+  background: inherit;
+  color: #000;
   border: none;
   border-radius: 6px;
-  padding: 10px 16px;
+  padding: 4px 10px;
   font-size: 1.5rem;
   cursor: pointer;
   transition: background 0.3s ease;
@@ -152,6 +152,7 @@ html.dark .nav-bottom {
 @media (max-width: 400px) {
   .sidebar {
     width: 180px;
+    padding-top: 50px;
   }
 }
 
@@ -161,6 +162,7 @@ html.dark .nav-bottom {
     transform: translateX(-100%);
     top: 0;
     height: 100vh;
+    padding-top: 50px;
   }
 
   .sidebar.open {

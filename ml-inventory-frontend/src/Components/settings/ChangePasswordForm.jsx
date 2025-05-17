@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from '../../axios';
-import NavbarTop from '../navbar/NavbarTop';
-import Navbar from '../navbar/Navbar';
+import LoadingSpinner from '../loading/Loading';
+import SuccessAlert from '../alerts/SuccessAlert';
+import ErrorAlert from '../alerts/ErrorAlert';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import './changePasswordForm.css';
 
 const ChangePasswordForm = () => {
   const [passwordData, setPasswordData] = useState({
@@ -10,25 +13,42 @@ const ChangePasswordForm = () => {
     new_password: '',
     new_password_confirmation: ''
   });
-  const [successMessage, setSuccessMessage] = useState('');
+  const [passwordVisibility, setPasswordVisibility] = useState({
+    old_password: false,
+    new_password: false,
+    new_password_confirmation: false
+  });
+  const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handlePasswordChange = (e) => {
     const { name, value } = e.target;
-    setPasswordData((prev) => ({ ...prev, [name]: value }));
+    setPasswordData(prev => ({ ...prev, [name]: value }));
     setError('');
+  };
+
+  const togglePasswordVisibility = (field) => {
+    setPasswordVisibility(prev => ({
+      ...prev,
+      [field]: !prev[field]
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSuccessMessage('');
+    setSuccess('');
     setError('');
   
     // Client-side validation
     if (passwordData.new_password !== passwordData.new_password_confirmation) {
       setError('New password and confirmation do not match.');
+      return;
+    }
+
+    if (passwordData.new_password.length < 8) {
+      setError('New password must be at least 8 characters long.');
       return;
     }
   
@@ -49,7 +69,7 @@ const ChangePasswordForm = () => {
       });
   
       if (response.data.success) {
-        setSuccessMessage('Password changed successfully! Please login again with your new password.');
+        setSuccess('Password changed successfully! Please login again with your new password.');
         
         // Clear user data immediately
         localStorage.removeItem('token');
@@ -60,31 +80,36 @@ const ChangePasswordForm = () => {
           navigate('/login');
         }, 2000);
       }
-    } catch (error) {
-      if (error.response) {
+    } catch (err) {
+      if (err.response) {
         // First check for specific error message from backend
-        if (error.response.data.message && error.response.data.message.toLowerCase().includes('current password')) {
+        if (err.response.data.message && err.response.data.message.toLowerCase().includes('current password')) {
           setError('Current password is incorrect.');
         } 
         // Then check status codes
         else {
-          switch (error.response.status) {
+          switch (err.response.status) {
             case 400:
-              setError(error.response.data.message || 'Current password is incorrect.');
+              setError(err.response.data.message || 'Current password is incorrect.');
               break;
             case 401:
-              setSuccessMessage('Password changed successfully!');
+              setError('Your session has expired. Please login again.');
               localStorage.removeItem('token');
               setTimeout(() => navigate('/login'), 2000);
               break;
             case 422:
-              setError(error.response.data.message || 'Validation error occurred.');
+              const validationErrors = err.response.data.errors;
+              if (validationErrors) {
+                setError(Object.values(validationErrors).flat().join(' '));
+              } else {
+                setError(err.response.data.message || 'Validation error occurred.');
+              }
               break;
             default:
-              setError(error.response.data.message || 'An error occurred. Please try again.');
+              setError(err.response.data.message || 'An error occurred. Please try again.');
           }
         }
-      } else if (error.request) {
+      } else if (err.request) {
         setError('Network error. Please check your connection.');
       } else {
         setError('An unexpected error occurred.');
@@ -93,70 +118,89 @@ const ChangePasswordForm = () => {
       setLoading(false);
     }
   };
+
   return (
-    <div className="form-container">
-      <NavbarTop />
-      <Navbar />
-      <form onSubmit={handleSubmit} className="password-form">
-        <h2>Change Password</h2>
+    <div className="password-form-container">
+      {/* Success and Error Alerts */}
+      {success && <SuccessAlert message={success} onClose={() => setSuccess('')} />}
+      {error && <ErrorAlert message={error} onClose={() => setError('')} />}
 
-        {successMessage && (
-          <div className="alert success">
-            {successMessage}
-          </div>
-        )}
+      <h2>Change Password</h2>
 
-        {error && (
-          <div className="alert error">
-            {error}
-          </div>
-        )}
-
+      <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Current Password</label>
-          <input
-            type="password"
-            name="old_password"
-            value={passwordData.old_password}
-            onChange={handlePasswordChange}
-            required
-            className="form-control"
-          />
+          <label>Current Password*</label>
+          <div className="password-input-container">
+            <input
+              type={passwordVisibility.old_password ? "text" : "password"}
+              name="old_password"
+              value={passwordData.old_password}
+              onChange={handlePasswordChange}
+              required
+            />
+            <button
+              type="button"
+              className="toggle-password"
+              onClick={() => togglePasswordVisibility('old_password')}
+              aria-label={passwordVisibility.old_password ? "Hide password" : "Show password"}
+            >
+              {passwordVisibility.old_password ? <FaEye /> :<FaEyeSlash /> }
+            </button>
+          </div>
         </div>
 
         <div className="form-group">
-          <label>New Password</label>
-          <input
-            type="password"
-            name="new_password"
-            value={passwordData.new_password}
-            onChange={handlePasswordChange}
-            required
-            minLength="8"
-            className="form-control"
-          />
+          <label>New Password*</label>
+          <div className="password-input-container">
+            <input
+              type={passwordVisibility.new_password ? "text" : "password"}
+              name="new_password"
+              value={passwordData.new_password}
+              onChange={handlePasswordChange}
+              required
+              minLength="8"
+            />
+            <button
+              type="button"
+              className="toggle-password"
+              onClick={() => togglePasswordVisibility('new_password')}
+              aria-label={passwordVisibility.new_password ? "Hide password" : "Show password"}
+            >
+              {passwordVisibility.new_password ? <FaEye /> :<FaEyeSlash /> }
+            </button>
+          </div>
+          <small className="form-text">Must be at least 8 characters long</small>
         </div>
 
         <div className="form-group">
-          <label>Confirm New Password</label>
-          <input
-            type="password"
-            name="new_password_confirmation"
-            value={passwordData.new_password_confirmation}
-            onChange={handlePasswordChange}
-            required
-            minLength="8"
-            className="form-control"
-          />
+          <label>Confirm New Password*</label>
+          <div className="password-input-container">
+            <input
+              type={passwordVisibility.new_password_confirmation ? "text" : "password"}
+              name="new_password_confirmation"
+              value={passwordData.new_password_confirmation}
+              onChange={handlePasswordChange}
+              required
+              minLength="8"
+            />
+            <button
+              type="button"
+              className="toggle-password"
+              onClick={() => togglePasswordVisibility('new_password_confirmation')}
+              aria-label={passwordVisibility.new_password_confirmation ? "Hide password" : "Show password"}
+            >
+              {passwordVisibility.new_password_confirmation ? <FaEye /> :<FaEyeSlash /> }
+            </button>
+          </div>
         </div>
 
         <div className="form-actions">
-          <button type="submit" className="btn btn-primary" disabled={loading}>
+          <button type="submit" disabled={loading} className="btn btn-primary">
             {loading ? 'Updating...' : 'Update Password'}
           </button>
           <button
             type="button"
-            onClick={() => navigate('/settings')}
+            onClick={() => navigate(-1)}
             className="btn btn-secondary"
             disabled={loading}
           >
