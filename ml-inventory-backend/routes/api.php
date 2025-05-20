@@ -1,19 +1,24 @@
 <?php
 
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\Category;
+use App\Models\Beneficiary;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BeneficiariesController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ProductController;
+use App\Http\Controllers\UserController;
+use App\Http\Middleware\IsAuthenticated;
+use App\Http\Controllers\InboxController;
 use App\Http\Controllers\OrdersController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReportsController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\WarehouseController;
 use App\Http\Controllers\OrderItemsController;
 use App\Http\Controllers\InventoriesController;
-use App\Http\Controllers\ReportsController;
-use App\Http\Controllers\InboxController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\WarehouseController;
-use App\Http\Middleware\IsAuthenticated;
+use App\Http\Controllers\BeneficiariesController;
 
 // Auth routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -113,4 +118,33 @@ Route::middleware([IsAuthenticated::class])->group(function () {
     Route::put('/warehouses/{id}', [WarehouseController::class, 'update']); // Update a warehouse
     Route::delete('/warehouses/{id}', [WarehouseController::class, 'destroy']); // Delete a warehouse
 
+});
+
+Route::middleware([IsAuthenticated::class])->get('/dashboard-stats', function () {
+    $now = Carbon::now();
+    $startOfThisWeek = $now->copy()->startOfWeek();
+    $endOfThisWeek = $now->copy()->endOfWeek();
+    $startOfLastWeek = $now->copy()->subWeek()->startOfWeek();
+    $endOfLastWeek = $now->copy()->subWeek()->endOfWeek();
+
+    return response()->json([
+        // TOTALS
+        'total_products' => Product::count(),
+        'total_categories' => Category::count(),
+        'total_beneficiaries' => Beneficiary::count(),
+        'total_orders' => Order::count(),
+
+        // WEEKLY COMPARISONS
+        'current_week_products' => Product::whereBetween('created_at', [$startOfThisWeek, $endOfThisWeek])->count(),
+        'previous_week_products' => Product::whereBetween('created_at', [$startOfLastWeek, $endOfLastWeek])->count(),
+
+        'current_week_categories' => Category::whereBetween('created_at', [$startOfThisWeek, $endOfThisWeek])->count(),
+        'previous_week_categories' => Category::whereBetween('created_at', [$startOfLastWeek, $endOfLastWeek])->count(),
+
+        'current_week_beneficiaries' => Beneficiary::whereBetween('created_at', [$startOfThisWeek, $endOfThisWeek])->count(),
+        'previous_week_beneficiaries' => Beneficiary::whereBetween('created_at', [$startOfLastWeek, $endOfLastWeek])->count(),
+
+        'current_week_orders' => Order::whereBetween('created_at', [$startOfThisWeek, $endOfThisWeek])->count(),
+        'previous_week_orders' => Order::whereBetween('created_at', [$startOfLastWeek, $endOfLastWeek])->count(),
+    ]);
 });

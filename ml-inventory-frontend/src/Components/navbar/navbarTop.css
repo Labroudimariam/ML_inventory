@@ -109,6 +109,12 @@
 .navbar-top.dark .notification-dot {
   border-color: #1f2937;
 }
+.notification-button{
+  color: black !important;
+}
+.navbar-top.dark .notification-button{
+  color: white !important;
+}
 
 /* Profile Image */
 .navbar-profile-img {

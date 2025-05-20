@@ -82,8 +82,10 @@ const AdminDashboard = () => {
 
         <div className="navbar-icons">
           <button>
-            <Bell size={22} />
-            <span className="notification-dot"></span>
+            <Link to="/admin-dashboard/inboxes/list" className="notification-button">
+              <Bell size={22} />
+              <span className="notification-dot"></span>
+            </Link>
           </button>
 
           <button onClick={toggleDarkMode}>

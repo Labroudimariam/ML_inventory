@@ -50,6 +50,7 @@ import ProductDetails from "./Components/products/ProductDetails";
 import UserDetails from "./Components/users/UserDetails";
 import DetailsOrder from "./Components/orders/DetailsOrder";
 import BeneficiaryDetails from "./Components/Beneficiaries/BeneficiaryDetails";
+import DashboardHome from "./Components/dashboards/DashboardHome";
 
 function App() {
   return (
@@ -63,7 +64,7 @@ function App() {
 
         {/* Admin Dashboard Routes */}
         <Route path="/admin-dashboard" element={<AdminDashboard />}>
-          <Route index element={<div></div>} />
+          <Route index element={<DashboardHome />}/>
 
           {/* Profile routes */}
           <Route path="settings" element={<Profile />} />
