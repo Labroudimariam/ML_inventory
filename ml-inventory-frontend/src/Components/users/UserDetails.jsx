@@ -190,7 +190,7 @@ const UserDetails = () => {
 
           <div className="user-actions">
             <Link
-              to={`${basePath}/user/edit/${id}`}
+              to={`${basePath}/users/edit/${id}`}
               className="btn btn-primary"
             >
               Edit User

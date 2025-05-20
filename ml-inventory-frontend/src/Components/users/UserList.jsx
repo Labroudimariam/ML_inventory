@@ -181,7 +181,7 @@ const UserList = () => {
               {renderFilterInput()}
             </div>
           </div>
-          <Link to={`${basePath}/user/add`} className="btn btn-primary add-user-btn">
+          <Link to={`${basePath}/users/add`} className="btn btn-primary add-user-btn">
             <FaPlus /> Add User
           </Link>
         </div>
@@ -219,13 +219,13 @@ const UserList = () => {
                 <td>
                   <div className="action-buttons">
                     <Link
-                      to={`${basePath}/user/edit/${user.id}`}
+                      to={`${basePath}/users/edit/${user.id}`}
                       className="btn btn-sm btn-outline-primary"
                     >
                       <FaRegEdit />
                     </Link>
                     <Link
-                      to={`${basePath}/user/details/${user.id}`}
+                      to={`${basePath}/users/details/${user.id}`}
                       className="btn btn-sm btn-outline-info"
                     >
                       <GrView />

@@ -149,7 +149,7 @@ const BeneficiaryDetails = () => {
 
         <div className="details-actions">
           <Link
-            to={`${basePath}/beneficiary/edit/${beneficiary.id}`}
+            to={`${basePath}/beneficiaries/edit/${beneficiary.id}`}
             className="btn btn-primary"
           >
             Edit Beneficiary

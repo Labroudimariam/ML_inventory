@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaEdit, FaTrash, FaPlus, FaSearch, FaBoxOpen } from "react-icons/fa";
 import LoadingSpinner from "../loading/Loading";
 import SuccessAlert from "../alerts/SuccessAlert";
@@ -13,7 +13,6 @@ const OrderItemList = () => {
   const [success, setSuccess] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [basePath, setBasePath] = useState("");
-  const navigate = useNavigate();
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -109,7 +108,7 @@ const OrderItemList = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Link to={`${basePath}/order-item/add`} className="btn btn-primary add-order-item-btn">
+          <Link to={`${basePath}/order-items/add`} className="btn btn-primary add-order-item-btn">
             <FaPlus /> Add Order Item
           </Link>
         </div>
@@ -132,12 +131,12 @@ const OrderItemList = () => {
               filteredOrderItems.map((item) => (
                 <tr key={item.id}>
                   <td>
-                    <Link to={`${basePath}/order/details/${item.order_id}`}>
+                    <Link to={`${basePath}/orders/details/${item.order_id}`}>
                       #{item.order?.order_number || item.order_id}
                     </Link>
                   </td>
                   <td>
-                    <Link to={`${basePath}/product/details/${item.product_id}`}>
+                    <Link to={`${basePath}/products/details/${item.product_id}`}>
                       {item.product?.name || 'N/A'}
                     </Link>
                   </td>
@@ -147,7 +146,7 @@ const OrderItemList = () => {
                   <td>
                     <div className="action-buttons">
                       <Link
-                        to={`${basePath}/order-item/edit/${item.id}`}
+                        to={`${basePath}/order-items/edit/${item.id}`}
                         className="btn btn-sm btn-outline-primary"
                       >
                         <FaEdit /> Edit

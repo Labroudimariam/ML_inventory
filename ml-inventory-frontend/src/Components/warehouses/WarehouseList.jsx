@@ -95,7 +95,7 @@ const WarehouseList = () => {
       <div className="warehouse-list-header">
         <h2>Warehouses</h2>
         <div className="header-controls">
-          <Link to={`${basePath}/warehouse/add`} className="btn btn-primary add-warehouse-btn">
+          <Link to={`${basePath}/warehouses/add`} className="btn btn-primary add-warehouse-btn">
             <FaPlus /> Add Warehouse
           </Link>
         </div>
@@ -125,7 +125,7 @@ const WarehouseList = () => {
                   <td>
                     <div className="action-buttons">
                       <Link
-                        to={`${basePath}/warehouse/edit/${warehouse.id}`}
+                        to={`${basePath}/warehouses/edit/${warehouse.id}`}
                         className="btn btn-sm btn-outline-primary"
                       >
                         <FaRegEdit />

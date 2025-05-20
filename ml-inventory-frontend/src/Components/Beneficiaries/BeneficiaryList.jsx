@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaPlus, FaRegEdit, FaRegTrashAlt, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { GrView } from "react-icons/gr";
 import LoadingSpinner from "../loading/Loading";
@@ -16,7 +16,6 @@ const BeneficiaryList = () => {
   const [basePath, setBasePath] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [beneficiariesPerPage] = useState(4); 
-  const navigate = useNavigate();
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -97,7 +96,7 @@ const BeneficiaryList = () => {
       <div className="beneficiary-list-header">
         <h2>Beneficiaries</h2>
         <div className="header-controls">
-          <Link to={`${basePath}/beneficiary/add`} className="btn btn-primary add-beneficiary-btn">
+          <Link to={`${basePath}/beneficiaries/add`} className="btn btn-primary add-beneficiary-btn">
             <FaPlus /> Add Beneficiary
           </Link>
         </div>
@@ -133,13 +132,13 @@ const BeneficiaryList = () => {
                   <td>
                     <div className="action-buttons">
                       <Link
-                        to={`${basePath}/beneficiary/edit/${beneficiary.id}`}
+                        to={`${basePath}/beneficiaries/edit/${beneficiary.id}`}
                         className="btn btn-sm btn-outline-primary"
                       >
                         <FaRegEdit />
                       </Link>
                       <Link
-                        to={`${basePath}/beneficiary/details/${beneficiary.id}`}
+                        to={`${basePath}/beneficiaries/details/${beneficiary.id}`}
                         className="btn btn-sm btn-outline-info"
                       >
                         <GrView />

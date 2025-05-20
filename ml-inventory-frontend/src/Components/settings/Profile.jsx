@@ -105,11 +105,11 @@ const Profile = () => {
           <div className="profile-header">
             <h1>Settings</h1>
             <div className="profile-actions">
-              <Link to={`${basePath}/profile/edit`} className="btn btn-primary">
+              <Link to={`${basePath}/settings/profile/edit`} className="btn btn-primary">
                 Edit Profile
               </Link>
               <Link
-                to={`${basePath}/profile/change-password`}
+                to={`${basePath}/settings/profile/change-password`}
                 className="btn btn-primary"
               >
                 Change Password

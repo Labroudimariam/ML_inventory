@@ -258,7 +258,7 @@ const ReportList = () => {
             </div>
           </div>
           <Link
-            to={`${basePath}/report/add`}
+            to={`${basePath}/reports/add`}
             className="btn btn-primary add-report-btn"
           >
             <FaPlus /> Generate Report
@@ -299,14 +299,14 @@ const ReportList = () => {
                   <td>
                     <div className="action-buttons">
                       <Link
-                        to={`${basePath}/report/edit/${report.id}`}
+                        to={`${basePath}/reports/edit/${report.id}`}
                         className="btn btn-sm btn-outline-primary"
                         disabled={report.status === "processing"}
                       >
                         <FaRegEdit />
                       </Link>
                       <Link
-                        to={`${basePath}/report/view/${report.id}`}
+                        to={`${basePath}/reports/view/${report.id}`}
                         className="btn btn-sm btn-outline-info"
                       >
                         <GrView />

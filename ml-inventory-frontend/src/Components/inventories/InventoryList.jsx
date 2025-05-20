@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaRegEdit, FaRegTrashAlt, FaPlus, FaArrowUp, FaArrowDown,FaChevronRight, FaChevronLeft  } from "react-icons/fa";
 import LoadingSpinner from "../loading/Loading";
 import SuccessAlert from "../alerts/SuccessAlert";
@@ -16,7 +16,6 @@ const InventoryList = () => {
   const [basePath, setBasePath] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [inventoriesPerPage] = useState(4);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));

@@ -92,7 +92,7 @@ const CategoryList = () => {
       <div className="category-list-header">
         <h2>Categories</h2>
         <div className="header-controls">
-          <Link to={`${basePath}/category/add`} className="btn btn-primary add-category-btn">
+          <Link to={`${basePath}/categories/add`} className="btn btn-primary add-category-btn">
             <FaPlus /> Add Category
           </Link>
         </div>
@@ -116,7 +116,7 @@ const CategoryList = () => {
                   <td>
                     <div className="action-buttons">
                       <Link
-                        to={`${basePath}/category/edit/${category.id}`}
+                        to={`${basePath}/categories/edit/${category.id}`}
                         className="btn btn-sm btn-outline-primary"
                       >
                         <FaRegEdit />

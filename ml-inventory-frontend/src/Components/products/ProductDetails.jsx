@@ -167,7 +167,7 @@ const ProductDetails = () => {
 
           <div className="product-actions">
             <Link
-              to={`${basePath}/product/edit/${id}`}
+              to={`${basePath}/products/edit/${id}`}
               className="btn btn-primary"
             >
               Edit Product

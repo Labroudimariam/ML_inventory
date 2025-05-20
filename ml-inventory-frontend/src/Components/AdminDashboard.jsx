@@ -22,16 +22,17 @@ import "../Components/navbar/navbar.css";
 import "../Components/navbar/navbarTop.css";
 
 const AdminDashboard = () => {
+  const [user, setUser] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // Dark mode state
   const [isDarkMode, setIsDarkMode] = useState(
     () => localStorage.getItem("darkMode") === "true"
   );
 
-  // User state
-  const [user, setUser] = useState(null);
-
-  // Navbar sidebar state
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const handleSearchChange = (e) => {
+  setSearchQuery(e.target.value);
+};
 
   // Toggle dark mode
   const toggleDarkMode = () => {
@@ -82,7 +83,10 @@ const AdminDashboard = () => {
 
         <div className="navbar-icons">
           <button>
-            <Link to="/admin-dashboard/inboxes/list" className="notification-button">
+            <Link
+              to="/admin-dashboard/inboxes/list"
+              className="notification-button"
+            >
               <Bell size={22} />
               <span className="notification-dot"></span>
             </Link>
@@ -124,52 +128,152 @@ const AdminDashboard = () => {
               <NavLink
                 to="/admin-dashboard/products/list"
                 onClick={closeSidebar}
+                className={({ isActive }) =>
+                  `nav-link ${
+                    isActive ||
+                    window.location.pathname.includes(
+                      "/admin-dashboard/products/"
+                    )
+                      ? "active"
+                      : ""
+                  }`
+                }
               >
                 <FaBoxOpen /> Products
               </NavLink>
               <NavLink
                 to="/admin-dashboard/categories/list"
                 onClick={closeSidebar}
+                className={({ isActive }) =>
+                  `nav-link ${
+                    isActive ||
+                    window.location.pathname.includes(
+                      "/admin-dashboard/categories/"
+                    )
+                      ? "active"
+                      : ""
+                  }`
+                }
               >
                 <FaFolderOpen /> Categories
               </NavLink>
-              <NavLink to="/admin-dashboard/orders/list" onClick={closeSidebar}>
+              <NavLink to="/admin-dashboard/orders/list" onClick={closeSidebar}
+              className={({ isActive }) =>
+                  `nav-link ${
+                    isActive ||
+                    window.location.pathname.includes(
+                      "/admin-dashboard/orders/"
+                    )
+                      ? "active"
+                      : ""
+                  }`
+                }>
                 <FaFileInvoice /> Orders
               </NavLink>
               <NavLink
                 to="/admin-dashboard/beneficiaries/list"
                 onClick={closeSidebar}
+                className={({ isActive }) =>
+                  `nav-link ${
+                    isActive ||
+                    window.location.pathname.includes(
+                      "/admin-dashboard/beneficiaries/"
+                    )
+                      ? "active"
+                      : ""
+                  }`
+                }
               >
                 <PiHandshakeFill /> Beneficiaries
               </NavLink>
-              <NavLink to="/admin-dashboard/users/list" onClick={closeSidebar}>
+              <NavLink to="/admin-dashboard/users/list" onClick={closeSidebar}
+              className={({ isActive }) =>
+                  `nav-link ${
+                    isActive ||
+                    window.location.pathname.includes(
+                      "/admin-dashboard/users/"
+                    )
+                      ? "active"
+                      : ""
+                  }`
+                }>
                 <FaUsers /> Users
               </NavLink>
               <NavLink
                 to="/admin-dashboard/inboxes/list"
                 onClick={closeSidebar}
+                className={({ isActive }) =>
+                  `nav-link ${
+                    isActive ||
+                    window.location.pathname.includes(
+                      "/admin-dashboard/inboxes/"
+                    )
+                      ? "active"
+                      : ""
+                  }`
+                }
               >
                 <FaEnvelopeOpenText /> Inbox
               </NavLink>
               <NavLink
                 to="/admin-dashboard/inventory/list"
                 onClick={closeSidebar}
+                className={({ isActive }) =>
+                  `nav-link ${
+                    isActive ||
+                    window.location.pathname.includes(
+                      "/admin-dashboard/inventory/"
+                    )
+                      ? "active"
+                      : ""
+                  }`
+                }
               >
                 <FaChartBar /> Inventory
               </NavLink>
               <NavLink
                 to="/admin-dashboard/warehouses/list"
                 onClick={closeSidebar}
+                className={({ isActive }) =>
+                  `nav-link ${
+                    isActive ||
+                    window.location.pathname.includes(
+                      "/admin-dashboard/warehouses/"
+                    )
+                      ? "active"
+                      : ""
+                  }`
+                }
               >
                 <FaWarehouse /> Warehouse
               </NavLink>
               <NavLink
                 to="/admin-dashboard/reports/list"
                 onClick={closeSidebar}
+                className={({ isActive }) =>
+                  `nav-link ${
+                    isActive ||
+                    window.location.pathname.includes(
+                      "/admin-dashboard/reports/"
+                    )
+                      ? "active"
+                      : ""
+                  }`
+                }
               >
                 <FaChartLine /> Reports
               </NavLink>
-              <NavLink to="/admin-dashboard/settings" onClick={closeSidebar}>
+              <NavLink to="/admin-dashboard/settings" onClick={closeSidebar}
+              className={({ isActive }) =>
+                  `nav-link ${
+                    isActive ||
+                    window.location.pathname.includes(
+                      "/admin-dashboard/settings/"
+                    )
+                      ? "active"
+                      : ""
+                  }`
+                }>
                 <FaCog /> Settings
               </NavLink>
             </div>

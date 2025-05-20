@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { FaRegTrashAlt, FaRegEdit, FaPlus } from "react-icons/fa";
 import LoadingSpinner from "../loading/Loading";
 import SuccessAlert from "../alerts/SuccessAlert";
@@ -16,7 +16,6 @@ const OrderList = () => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [filterType, setFilterType] = useState("all");
   const [basePath, setBasePath] = useState("");
-  const navigate = useNavigate();
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -131,7 +130,7 @@ const OrderList = () => {
             </select>
           </div>
           <Link
-            to={`${basePath}/order/add`}
+            to={`${basePath}/orders/add`}
             className="btn btn-primary add-order-btn"
           >
             <FaPlus /> Create Order
@@ -169,13 +168,13 @@ const OrderList = () => {
                   <td>
                     <div className="action-buttons">
                       <Link
-                        to={`${basePath}/order/edit/${order.id}`}
+                        to={`${basePath}/orders/edit/${order.id}`}
                         className="btn btn-sm btn-outline-primary"
                       >
                         <FaRegEdit />
                       </Link>
                       <Link
-                        to={`${basePath}/order/details/${order.id}`}
+                        to={`${basePath}/orders/details/${order.id}`}
                         className="btn btn-sm btn-outline-info"
                       >
                         <GrView />

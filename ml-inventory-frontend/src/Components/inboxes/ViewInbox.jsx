@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { 
   FaArrowLeft, 
   FaReply, 
@@ -114,7 +114,7 @@ const ViewInbox = () => {
         
         <div className="inbox-actions">
           <button
-            onClick={() => navigate(`${basePath}/inbox/add`, { state: { replyTo: inbox } })}
+            onClick={() => navigate(`${basePath}/inboxes/add`, { state: { replyTo: inbox } })}
             className="btn btn-reply"
           >
             <FaReply /> Reply

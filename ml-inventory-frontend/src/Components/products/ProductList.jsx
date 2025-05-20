@@ -239,7 +239,7 @@ const ProductList = () => {
               {renderFilterInput()}
             </div>
           </div>
-          <Link to={`${basePath}/product/add`} className="btn btn-primary add-product-btn">
+          <Link to={`${basePath}/products/add`} className="btn btn-primary add-product-btn">
             <FaPlus /> Add Product
           </Link>
         </div>
@@ -281,13 +281,13 @@ const ProductList = () => {
                 <td>
                   <div className="action-buttons">
                     <Link
-                      to={`${basePath}/product/edit/${product.id}`}
+                      to={`${basePath}/products/edit/${product.id}`}
                       className="btn btn-sm btn-outline-primary"
                     >
                       <FaRegEdit />
                     </Link>
                     <Link
-                      to={`${basePath}/product/details/${product.id}`}
+                      to={`${basePath}/products/details/${product.id}`}
                       className="btn btn-sm btn-outline-info"
                     >
                       <GrView />

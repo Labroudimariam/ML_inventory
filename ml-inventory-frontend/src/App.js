@@ -68,50 +68,50 @@ function App() {
 
           {/* Profile routes */}
           <Route path="settings" element={<Profile />} />
-          <Route path="profile/edit" element={<UpdateProfileForm />} />
+          <Route path="settings/profile/edit" element={<UpdateProfileForm />} />
           <Route
-            path="profile/change-password"
+            path="settings/profile/change-password"
             element={<ChangePasswordForm />}
           />
 
           {/* Users routes */}
           <Route path="users/list" element={<UserList />} />
-          <Route path="user/details/:id" element={<UserDetails />} />
-          <Route path="user/add" element={<AddUser />} />
-          <Route path="user/edit/:id" element={<EditUser />} />
+          <Route path="users/details/:id" element={<UserDetails />} />
+          <Route path="users/add" element={<AddUser />} />
+          <Route path="users/edit/:id" element={<EditUser />} />
 
           {/* Products routes */}
           <Route path="products/list" element={<ProductList />} />
-          <Route path="product/add" element={<AddProduct />} />
-          <Route path="product/edit/:id" element={<EditProduct />} />
-          <Route path="product/details/:id" element={<ProductDetails />} />
+          <Route path="products/add" element={<AddProduct />} />
+          <Route path="products/edit/:id" element={<EditProduct />} />
+          <Route path="products/details/:id" element={<ProductDetails />} />
 
           {/* Warehouses routes */}
           <Route path="warehouses/list" element={<WarehouseList />} />
-          <Route path="warehouse/add" element={<AddWarehouse />} />
-          <Route path="warehouse/edit/:id" element={<EditWarehouse />} />
+          <Route path="warehouses/add" element={<AddWarehouse />} />
+          <Route path="warehouses/edit/:id" element={<EditWarehouse />} />
 
           {/* Beneficiaries routes */}
           <Route path="beneficiaries/list" element={<BeneficiaryList />} />
-          <Route path="beneficiary/add" element={<AddBeneficiary />} />
-          <Route path="beneficiary/edit/:id" element={<EditBeneficiary />} />
-          <Route path="beneficiary/details/:id" element={<BeneficiaryDetails />} />
+          <Route path="beneficiaries/add" element={<AddBeneficiary />} />
+          <Route path="beneficiaries/edit/:id" element={<EditBeneficiary />} />
+          <Route path="beneficiaries/details/:id" element={<BeneficiaryDetails />} />
 
           {/* Categories routes */}
           <Route path="categories/list" element={<CategoryList />} />
-          <Route path="category/add" element={<AddCategory />} />
-          <Route path="category/edit/:id" element={<EditCategory />} />
+          <Route path="categories/add" element={<AddCategory />} />
+          <Route path="categories/edit/:id" element={<EditCategory />} />
 
           {/* Orders routes */}
           <Route path="orders/list" element={<OrderList />} />
-          <Route path="order/add" element={<AddOrder />} />
-          <Route path="order/edit/:id" element={<EditOrder />} />
-          <Route path="order/details/:id" element={<DetailsOrder />} />
+          <Route path="orders/add" element={<AddOrder />} />
+          <Route path="orders/edit/:id" element={<EditOrder />} />
+          <Route path="orders/details/:id" element={<DetailsOrder />} />
 
           {/* Order items routes */}
           <Route path="order-items/list" element={<OrderItemList />} />
-          <Route path="order-item/add" element={<AddOrderItem />} />
-          <Route path="order-item/edit/:id" element={<EditOrderItem />} />
+          <Route path="order-items/add" element={<AddOrderItem />} />
+          <Route path="order-items/edit/:id" element={<EditOrderItem />} />
 
           {/* Inventory routes */}
           <Route path="inventory/list" element={<InventoryList />} />
@@ -120,14 +120,14 @@ function App() {
 
           {/* Reports routes */}
           <Route path="reports/list" element={<ReportList />} />
-          <Route path="report/add" element={<AddReport />} />
-          <Route path="report/edit/:id" element={<EditReport />} />
-          <Route path="report/view/:id" element={<ViewReport />} />
+          <Route path="reports/add" element={<AddReport />} />
+          <Route path="reports/edit/:id" element={<EditReport />} />
+          <Route path="reports/view/:id" element={<ViewReport />} />
 
           {/* Inboxes routes */}
           <Route path="inboxes/list" element={<InboxList />} />
-          <Route path="inbox/add" element={<AddInbox />} />
-          <Route path="inbox/view/:id" element={<ViewInbox />} />
+          <Route path="inboxes/add" element={<AddInbox />} />
+          <Route path="inboxes/view/:id" element={<ViewInbox />} />
         </Route>
 
         {/* Other dashboards */}
@@ -135,37 +135,37 @@ function App() {
           <Route index element={<div></div>} />
           {/* Profile routes */}
           <Route path="settings" element={<Profile />} />
-          <Route path="profile/edit" element={<UpdateProfileForm />} />
+          <Route path="settings/profile/edit" element={<UpdateProfileForm />} />
           <Route
-            path="profile/change-password"
+            path="settings/profile/change-password"
             element={<ChangePasswordForm />}
           />
 
           {/* Products routes */}
           <Route path="products/list" element={<ProductList />} />
-          <Route path="product/add" element={<AddProduct />} />
-          <Route path="product/edit/:id" element={<EditProduct />} />
-          <Route path="product/details/:id" element={<ProductDetails />} />
+          <Route path="products/add" element={<AddProduct />} />
+          <Route path="products/edit/:id" element={<EditProduct />} />
+          <Route path="products/details/:id" element={<ProductDetails />} />
 
           {/* Categories routes */}
           <Route path="categories/list" element={<CategoryList />} />
-          <Route path="category/add" element={<AddCategory />} />
-          <Route path="category/edit/:id" element={<EditCategory />} />
+          <Route path="categories/add" element={<AddCategory />} />
+          <Route path="categories/edit/:id" element={<EditCategory />} />
 
           {/* Warehouses routes */}
           <Route path="warehouses/list" element={<WarehouseList />} />
-          <Route path="warehouse/add" element={<AddWarehouse />} />
-          <Route path="warehouse/edit/:id" element={<EditWarehouse />} />
+          <Route path="warehouses/add" element={<AddWarehouse />} />
+          <Route path="warehouses/edit/:id" element={<EditWarehouse />} />
 
           {/* Orders routes */}
           <Route path="orders/list" element={<OrderList />} />
-          <Route path="order/add" element={<AddOrder />} />
-          <Route path="order/edit/:id" element={<EditOrder />} />
+          <Route path="orders/add" element={<AddOrder />} />
+          <Route path="orders/edit/:id" element={<EditOrder />} />
 
           {/* Order items routes */}
           <Route path="order-items/list" element={<OrderItemList />} />
-          <Route path="order-item/add" element={<AddOrderItem />} />
-          <Route path="order-item/edit/:id" element={<EditOrderItem />} />
+          <Route path="order-items/add" element={<AddOrderItem />} />
+          <Route path="order-items/edit/:id" element={<EditOrderItem />} />
 
           {/* Inventory routes */}
           <Route path="inventory/list" element={<InventoryList />} />
@@ -174,23 +174,23 @@ function App() {
 
           {/* Reports routes */}
           <Route path="reports/list" element={<ReportList />} />
-          <Route path="report/add" element={<AddReport />} />
-          <Route path="report/edit/:id" element={<EditReport />} />
-          <Route path="report/view/:id" element={<ViewReport />} />
+          <Route path="reports/add" element={<AddReport />} />
+          <Route path="reports/edit/:id" element={<EditReport />} />
+          <Route path="reports/view/:id" element={<ViewReport />} />
 
           {/* Inboxes routes */}
           <Route path="inboxes/list" element={<InboxList />} />
-          <Route path="inbox/add" element={<AddInbox />} />
-          <Route path="inbox/view/:id" element={<ViewInbox />} />
+          <Route path="inboxes/add" element={<AddInbox />} />
+          <Route path="inboxes/view/:id" element={<ViewInbox />} />
         </Route>
 
         <Route path="/storekeeper-dashboard" element={<StoreKeeperDashboard />}>
           <Route index element={<div></div>} />
           {/* Profile routes */}
           <Route path="settings" element={<Profile />} />
-          <Route path="profile/edit" element={<UpdateProfileForm />} />
+          <Route path="settings/profile/edit" element={<UpdateProfileForm />} />
           <Route
-            path="profile/change-password"
+            path="settings/profile/change-password"
             element={<ChangePasswordForm />}
           />
 
@@ -206,14 +206,14 @@ function App() {
 
           {/* Reports routes */}
           <Route path="reports/list" element={<ReportList />} />
-          <Route path="report/add" element={<AddReport />} />
-          <Route path="report/edit/:id" element={<EditReport />} />
-          <Route path="report/view/:id" element={<ViewReport />} />
+          <Route path="reports/add" element={<AddReport />} />
+          <Route path="reports/edit/:id" element={<EditReport />} />
+          <Route path="reports/view/:id" element={<ViewReport />} />
 
           {/* Inboxes routes */}
           <Route path="inboxes/list" element={<InboxList />} />
-          <Route path="inbox/add" element={<AddInbox />} />
-          <Route path="inbox/view/:id" element={<ViewInbox />} />
+          <Route path="inboxes/add" element={<AddInbox />} />
+          <Route path="inboxes/view/:id" element={<ViewInbox />} />
         </Route>
       </Routes>
     </Router>

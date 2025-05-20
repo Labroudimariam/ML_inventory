@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "../../axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
   FaEnvelope,
   FaEnvelopeOpen,
@@ -27,7 +27,6 @@ const InboxList = () => {
   const [basePath, setBasePath] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [inboxesPerPage] = useState(4);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -159,7 +158,7 @@ const InboxList = () => {
               <option value="important">Important</option>
             </select>
           </div>
-          <Link to={`${basePath}/inbox/add`} className="btn btn-primary">
+          <Link to={`${basePath}/inboxes/add`} className="btn btn-primary">
             <FaPlus /> New Message
           </Link>
         </div>
@@ -219,14 +218,14 @@ const InboxList = () => {
                   <td>
                     <div className="action-buttons">
                       <Link
-                        to={`${basePath}/inbox/view/${inbox.id}`}
+                        to={`${basePath}/inboxes/view/${inbox.id}`}
                         className="btn btn-sm btn-outline-primary"
                         onClick={() => !inbox.read_at && markAsRead(inbox.id)}
                       >
                         <GrView />
                       </Link>
                       <Link
-                        to={`${basePath}/inbox/add`}
+                        to={`${basePath}/inboxes/add`}
                         state={{ replyTo: inbox }}
                         className="btn btn-sm btn-outline-info"
                       >

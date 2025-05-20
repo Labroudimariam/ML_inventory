@@ -102,7 +102,7 @@ body {
   font-size: 14px;
   font-weight: 500;
   display: block;
-  color: var(--text-dark);
+  color: var(--text-dark) !important;
 }
 
 .input-with-icon {
@@ -128,9 +128,9 @@ body {
   border: 2px solid var(--primary-hover) !important;
   border-radius: 10px;
   font-size: 14px;
-  color: var(--text-dark);
+  color: var(--text-dark) !important;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  background-color: inherit;
+  background-color: inherit !important;
 }
 
 .input-with-icon input::placeholder {

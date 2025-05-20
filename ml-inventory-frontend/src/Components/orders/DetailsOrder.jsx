@@ -149,7 +149,7 @@ const DetailsOrder = () => {
         <div className="details-actions">
 
           <Link
-            to={`${basePath}/order/edit/${order.id}`}
+            to={`${basePath}/orders/edit/${order.id}`}
             className="btn btn-primary"
           >
             Edit Order
