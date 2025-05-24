@@ -15,7 +15,7 @@ const BeneficiaryList = () => {
   const [success, setSuccess] = useState("");
   const [basePath, setBasePath] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [beneficiariesPerPage] = useState(4); 
+  const [beneficiariesPerPage] = useState(10); 
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));

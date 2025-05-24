@@ -14,7 +14,7 @@ const CategoryList = () => {
   const [success, setSuccess] = useState("");
   const [basePath, setBasePath] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [categoriesPerPage] = useState(4);
+  const [categoriesPerPage] = useState(10);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));

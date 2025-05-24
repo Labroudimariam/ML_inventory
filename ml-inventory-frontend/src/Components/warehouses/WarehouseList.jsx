@@ -14,7 +14,7 @@ const WarehouseList = () => {
   const [success, setSuccess] = useState("");
   const [basePath, setBasePath] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [warehousesPerPage] = useState(4);
+  const [warehousesPerPage] = useState(10);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));

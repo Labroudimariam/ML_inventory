@@ -15,7 +15,7 @@ const InventoryList = () => {
   const [filterMovement, setFilterMovement] = useState("all");
   const [basePath, setBasePath] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [inventoriesPerPage] = useState(4);
+  const [inventoriesPerPage] = useState(10);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));

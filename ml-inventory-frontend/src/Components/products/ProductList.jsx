@@ -24,7 +24,7 @@ const ProductList = () => {
   
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [productsPerPage] = useState(4);
+  const [productsPerPage] = useState(10);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));

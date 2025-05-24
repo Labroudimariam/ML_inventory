@@ -121,12 +121,6 @@ const UserDetails = () => {
                   <span className="info-value">{user.email}</span>
                 </div>
                 <div className="info-row">
-                  <span className="info-label">Email Verified:</span>
-                  <span className="info-value">
-                    {user.email_verified_at ? "Yes" : "No"}
-                  </span>
-                </div>
-                <div className="info-row">
                   <span className="info-label">Phone:</span>
                   <span className="info-value">{user.phone || "N/A"}</span>
                 </div>

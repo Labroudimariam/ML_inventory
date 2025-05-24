@@ -34,7 +34,7 @@ const ReportList = () => {
 
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
-  const [reportsPerPage] = useState(4);
+  const [reportsPerPage] = useState(10);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));

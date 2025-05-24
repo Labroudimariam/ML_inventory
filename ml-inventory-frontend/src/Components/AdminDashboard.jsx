@@ -23,16 +23,11 @@ import "../Components/navbar/navbarTop.css";
 
 const AdminDashboard = () => {
   const [user, setUser] = useState(null);
-  const [searchQuery, setSearchQuery] = useState("");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // Dark mode state
   const [isDarkMode, setIsDarkMode] = useState(
     () => localStorage.getItem("darkMode") === "true"
   );
-
-  const handleSearchChange = (e) => {
-  setSearchQuery(e.target.value);
-};
 
   // Toggle dark mode
   const toggleDarkMode = () => {

@@ -26,7 +26,7 @@ const InboxList = () => {
   const [filterStatus, setFilterStatus] = useState("all");
   const [basePath, setBasePath] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [inboxesPerPage] = useState(4);
+  const [inboxesPerPage] = useState(10);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("user"));
