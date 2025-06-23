@@ -28,14 +28,15 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class)
+            ->withPivot('quantity', 'unit_price', 'total_price')
+            ->withTimestamps();
+    }
     public function warehouse()
     {
         return $this->belongsTo(Warehouse::class);
-    }
-
-    public function orderItems()
-    {
-        return $this->hasMany(OrderItem::class);
     }
 
     public function inventories()
@@ -43,7 +44,12 @@ class Product extends Model
         return $this->hasMany(Inventory::class);
     }
 
-
+    public function getStockAttribute()
+    {
+        $in = $this->inventories()->where('movement_type', 'in')->sum('quantity');
+        $out = $this->inventories()->where('movement_type', 'out')->sum('quantity');
+        return $in - $out;
+    }
 
     protected $appends = ['image_url'];
 

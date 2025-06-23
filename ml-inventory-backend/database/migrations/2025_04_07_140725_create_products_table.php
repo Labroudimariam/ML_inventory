@@ -15,16 +15,16 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('image')->nullable();
-            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
-            $table->foreignId('warehouse_id')->constrained('warehouses')->onDelete('cascade');
-            $table->integer('quantity');
-            $table->string('unit');
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('warehouse_id')->constrained()->onDelete('cascade');
+            $table->integer('quantity')->default(0);
+            $table->string('unit', 50);
             $table->decimal('price', 10, 2);
             $table->integer('threshold_value')->nullable();
             $table->date('expiry_date')->nullable();
             $table->enum('status', ['in-stock', 'out-of-stock', 'low-stock'])->default('in-stock');
             $table->text('description')->nullable();
-            $table->string('barcode')->nullable();
+            $table->string('barcode')->nullable()->unique();
             $table->timestamps();
         });
     }

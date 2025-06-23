@@ -213,16 +213,16 @@ const AdminDashboard = () => {
               <NavLink
                 to="/admin-dashboard/inventory/list"
                 onClick={closeSidebar}
-                className={({ isActive }) =>
-                  `nav-link ${
-                    isActive ||
-                    window.location.pathname.includes(
-                      "/admin-dashboard/inventory/"
-                    )
-                      ? "active"
-                      : ""
-                  }`
-                }
+                // className={({ isActive }) =>
+                //   `nav-link ${
+                //     isActive ||
+                //     window.location.pathname.includes(
+                //       "/admin-dashboard/inventory/"
+                //     )
+                //       ? "active"
+                //       : ""
+                //   }`
+                // }
               >
                 <FaChartBar /> Inventory
               </NavLink>

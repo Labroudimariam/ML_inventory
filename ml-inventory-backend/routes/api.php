@@ -16,9 +16,9 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReportsController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\WarehouseController;
-use App\Http\Controllers\OrderItemsController;
 use App\Http\Controllers\InventoriesController;
 use App\Http\Controllers\BeneficiariesController;
+use App\Http\Controllers\DeliveryController; 
 
 // Auth routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -34,7 +34,6 @@ Route::middleware('auth:api')->get('/profile', function (Request $request) {
         'user' => $request->user()
     ]);
 });
-
 
 Route::post('/forgot-password', [AuthController::class, 'forgotPassword']);
 
@@ -53,12 +52,11 @@ Route::middleware([IsAuthenticated::class])->group(function () {
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
     // Categories
-    Route::get('/categories', [CategoryController::class, 'index']); // Get all categories
-    Route::post('/categories', [CategoryController::class, 'store']); // Create a new category
-    Route::get('/categories/{id}', [CategoryController::class, 'show']); // Get a single category by ID
-    Route::put('/categories/{id}', [CategoryController::class, 'update']); // Update a category
-    Route::delete('/categories/{id}', [CategoryController::class, 'destroy']); // Delete a category
-
+    Route::get('/categories', [CategoryController::class, 'index']);
+    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::get('/categories/{id}', [CategoryController::class, 'show']);
+    Route::put('/categories/{id}', [CategoryController::class, 'update']);
+    Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
 
     // Products
     Route::get('products', [ProductController::class, 'index']);
@@ -80,13 +78,6 @@ Route::middleware([IsAuthenticated::class])->group(function () {
     Route::get('orders/{id}', [OrdersController::class, 'show']);
     Route::put('orders/{id}', [OrdersController::class, 'update']);
     Route::delete('orders/{id}', [OrdersController::class, 'destroy']);
-
-    // Order Items
-    Route::get('order-items', [OrderItemsController::class, 'index']);
-    Route::post('order-items', [OrderItemsController::class, 'store']);
-    Route::get('order-items/{id}', [OrderItemsController::class, 'show']);
-    Route::put('order-items/{id}', [OrderItemsController::class, 'update']);
-    Route::delete('order-items/{id}', [OrderItemsController::class, 'destroy']);
 
     // Inventory
     Route::get('inventory', [InventoriesController::class, 'index']);
@@ -111,13 +102,21 @@ Route::middleware([IsAuthenticated::class])->group(function () {
     Route::put('/inboxes/{id}/toggle-important', [InboxController::class, 'toggleImportant']);
 
     // Warehouses
+    Route::get('/warehouses', [WarehouseController::class, 'index']);
+    Route::post('/warehouses', [WarehouseController::class, 'store']);
+    Route::get('/warehouses/{id}', [WarehouseController::class, 'show']);
+    Route::put('/warehouses/{id}', [WarehouseController::class, 'update']);
+    Route::delete('/warehouses/{id}', [WarehouseController::class, 'destroy']);
 
-    Route::get('/warehouses', [WarehouseController::class, 'index']); // Get all warehouses
-    Route::post('/warehouses', [WarehouseController::class, 'store']); // Create a new warehouse
-    Route::get('/warehouses/{id}', [WarehouseController::class, 'show']); // Get a single warehouse by ID
-    Route::put('/warehouses/{id}', [WarehouseController::class, 'update']); // Update a warehouse
-    Route::delete('/warehouses/{id}', [WarehouseController::class, 'destroy']); // Delete a warehouse
-
+    // Deliveries
+    Route::get('/deliveries', [DeliveryController::class, 'index']);
+    Route::post('/deliveries', [DeliveryController::class, 'store']);
+    Route::get('/deliveries/{id}', [DeliveryController::class, 'show']);
+    Route::put('/deliveries/{id}', [DeliveryController::class, 'update']);
+    Route::patch('/deliveries/{id}', [DeliveryController::class, 'update']);
+    Route::delete('/deliveries/{id}', [DeliveryController::class, 'destroy']);
+    Route::post('/deliveries/{id}/validate', [DeliveryController::class, 'validateDelivery']);
+    Route::get('/deliveries/{id}/track', [DeliveryController::class, 'track']);
 });
 
 Route::middleware([IsAuthenticated::class])->get('/dashboard-stats', function () {
@@ -133,6 +132,7 @@ Route::middleware([IsAuthenticated::class])->get('/dashboard-stats', function ()
         'total_categories' => Category::count(),
         'total_beneficiaries' => Beneficiary::count(),
         'total_orders' => Order::count(),
+        'total_deliveries' => \App\Models\Delivery::count(),
 
         // WEEKLY COMPARISONS
         'current_week_products' => Product::whereBetween('created_at', [$startOfThisWeek, $endOfThisWeek])->count(),
@@ -146,5 +146,8 @@ Route::middleware([IsAuthenticated::class])->get('/dashboard-stats', function ()
 
         'current_week_orders' => Order::whereBetween('created_at', [$startOfThisWeek, $endOfThisWeek])->count(),
         'previous_week_orders' => Order::whereBetween('created_at', [$startOfLastWeek, $endOfLastWeek])->count(),
+
+        'current_week_deliveries' => \App\Models\Delivery::whereBetween('created_at', [$startOfThisWeek, $endOfThisWeek])->count(),
+        'previous_week_deliveries' => \App\Models\Delivery::whereBetween('created_at', [$startOfLastWeek, $endOfLastWeek])->count(),
     ]);
 });

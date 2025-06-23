@@ -96,12 +96,6 @@ const BeneficiaryDetails = () => {
               <span className="detail-value">{beneficiary.phone}</span>
             </div>
             <div className="detail-item">
-              <span className="detail-label">Gender:</span>
-              <span className="detail-value">
-                {beneficiary.gender || "N/A"}
-              </span>
-            </div>
-            <div className="detail-item">
               <span className="detail-label">AI Count:</span>
               <span className="detail-value">
                 {beneficiary.nombre_insemination_artificielle}

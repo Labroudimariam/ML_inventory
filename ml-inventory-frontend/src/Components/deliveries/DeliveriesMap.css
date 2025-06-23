@@ -1,0 +1,23 @@
+.map-section {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 1rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+}
+
+html.dark .map-section {
+  background-color: #1f2937;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border: 1px solid #6b7280;
+}
+.map-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #374151;
+  font-weight: 600;
+}
+
+html.dark .map-title {
+  color: #e5e7eb;
+}

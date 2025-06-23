@@ -124,9 +124,9 @@ const InventoryList = () => {
               </select>
             </div>
           </div>
-          <Link to={`${basePath}/inventory/add`} className="btn btn-primary add-inventory-btn">
+          {/* <Link to={`${basePath}/inventory/add`} className="btn btn-primary add-inventory-btn">
             <FaPlus /> Add Record
-          </Link>
+          </Link> */}
         </div>
       </div>
 
@@ -155,12 +155,12 @@ const InventoryList = () => {
                   <td>{item.user?.name || 'System'}</td>
                   <td>
                     <div className="action-buttons">
-                      <Link
+                      {/* <Link
                         to={`${basePath}/inventory/edit/${item.id}`}
                         className="btn btn-sm btn-outline-primary"
                       >
                         <FaRegEdit />
-                      </Link>
+                      </Link> */}
                       <button
                         onClick={() => handleDelete(item.id)}
                         className="btn btn-sm btn-outline-danger"

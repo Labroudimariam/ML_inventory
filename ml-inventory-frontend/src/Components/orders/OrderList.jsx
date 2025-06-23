@@ -148,7 +148,8 @@ const OrderList = () => {
               <th>Type</th>
               <th>Status</th>
               <th>Order Date</th>
-              <th>Total Quantity</th>
+              <th>Total Qty</th>
+              <th>Total Amount</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -157,14 +158,13 @@ const OrderList = () => {
               filteredOrders.map((order) => (
                 <tr key={order.id}>
                   <td>{order.order_number}</td>
-                  <td>
-                      {order.beneficiary?.name}
-                  </td>
+                  <td>{order.beneficiary?.name}</td>
                   <td>{order.user?.name || "System"}</td>
                   <td>{order.type}</td>
                   <td>{getStatusBadge(order.status)}</td>
                   <td>{new Date(order.order_date).toLocaleDateString()}</td>
                   <td>{order.total_quantity}</td>
+                  <td>${order.total_amount || '0.00'}</td>
                   <td>
                     <div className="action-buttons">
                       <Link
@@ -196,7 +196,7 @@ const OrderList = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="9" className="text-center">
+                <td colSpan="10" className="text-center">
                   No orders found matching your filters.
                 </td>
               </tr>

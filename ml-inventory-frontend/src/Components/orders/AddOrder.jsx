@@ -13,13 +13,15 @@ const AddOrder = () => {
     order_number: "",
     type: "Semen",
     status: "Pending",
-    total_quantity: 0,
     order_date: new Date().toISOString().split('T')[0],
     expected_delivery_date: "",
-    notes: ""
+    notes: "",
+    products: []
   });
   const [beneficiaries, setBeneficiaries] = useState([]);
   const [users, setUsers] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [availableProducts, setAvailableProducts] = useState([]);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -33,7 +35,6 @@ const AddOrder = () => {
       return;
     }
 
-    // Set base path based on user role
     switch(user.role.toLowerCase()) {
       case 'admin': 
         setBasePath('/admin-dashboard');
@@ -51,14 +52,15 @@ const AddOrder = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [beneficiariesRes, usersRes] = await Promise.all([
+        const [beneficiariesRes, usersRes, productsRes] = await Promise.all([
           axios.get("/beneficiaries"),
-          axios.get("/users")
+          axios.get("/users"),
+          axios.get("/products")
         ]);
         setBeneficiaries(beneficiariesRes.data);
         setUsers(usersRes.data);
+        setAvailableProducts(productsRes.data.filter(p => p.quantity > 0));
         
-        // Set current user as default
         setFormData(prev => ({
           ...prev,
           user_id: user.id
@@ -69,6 +71,7 @@ const AddOrder = () => {
         setLoading(false);
       }
     };
+
     fetchData();
   }, []);
 
@@ -89,21 +92,83 @@ const AddOrder = () => {
     }));
   };
 
+  const handleProductChange = (index, field, value) => {
+    const updatedProducts = [...formData.products];
+    updatedProducts[index][field] = field === 'quantity' || field === 'unit_price' 
+      ? parseFloat(value) 
+      : value;
+    
+    // If product_id changed, update the product details
+    if (field === 'product_id') {
+      const product = availableProducts.find(p => p.id == value);
+      if (product) {
+        updatedProducts[index].unit_price = product.price;
+      }
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      products: updatedProducts
+    }));
+  };
+
+  const addProduct = () => {
+    setFormData(prev => ({
+      ...prev,
+      products: [
+        ...prev.products,
+        { product_id: "", quantity: 1, unit_price: 0 }
+      ]
+    }));
+  };
+
+  const removeProduct = (index) => {
+    const updatedProducts = [...formData.products];
+    updatedProducts.splice(index, 1);
+    setFormData(prev => ({
+      ...prev,
+      products: updatedProducts
+    }));
+  };
+
+  const calculateTotal = () => {
+    return formData.products.reduce((total, product) => {
+      return total + (product.quantity * product.unit_price);
+    }, 0);
+  };
+
+  const calculateTotalQuantity = () => {
+    return formData.products.reduce((total, product) => {
+      return total + product.quantity;
+    }, 0);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
     setSuccess("");
 
-    // Validation
     if (!formData.beneficiary_id || !formData.order_number || !formData.user_id) {
       setError("Please fill in all required fields");
       setLoading(false);
       return;
     }
 
+    if (formData.products.length === 0) {
+      setError("Please add at least one product to the order");
+      setLoading(false);
+      return;
+    }
+
     try {
-      await axios.post("/orders", formData);
+      const payload = {
+        ...formData,
+        total_amount: calculateTotal(),
+        total_quantity: calculateTotalQuantity()
+      };
+      
+      await axios.post("/orders", payload);
       setSuccess("Order created successfully!");
       setTimeout(() => navigate(`${basePath}/orders/list`), 1500);
     } catch (err) {
@@ -124,7 +189,6 @@ const AddOrder = () => {
 
   return (
     <div className="order-form-container">
-      {/* Success and Error Alerts */}
       {success && <SuccessAlert message={success} onClose={() => setSuccess("")} />}
       {error && <ErrorAlert message={error} onClose={() => setError("")} />}
 
@@ -246,18 +310,61 @@ const AddOrder = () => {
               min={formData.order_date}
             />
           </div>
+        </div>
 
-          <div className="form-group">
-            <label>Total Quantity*</label>
-            <input
-              type="number"
-              name="total_quantity"
-              min="0"
-              step="1"
-              value={formData.total_quantity}
-              onChange={handleChange}
-              required
-            />
+        <div className="products-section">
+          <h3>Products</h3>
+          <button type="button" onClick={addProduct} className="btn btn-sm btn-primary">
+            Add Product
+          </button>
+
+          {formData.products.map((product, index) => (
+            <div key={index} className="product-row">
+              <select
+                value={product.product_id}
+                onChange={(e) => handleProductChange(index, 'product_id', e.target.value)}
+                required
+              >
+                <option value="">Select Product</option>
+                {availableProducts.map(p => (
+                  <option key={p.id} value={p.id}>
+                    {p.name} (Stock: {p.quantity})
+                  </option>
+                ))}
+              </select>
+
+              <input
+                type="number"
+                min="1"
+                value={product.quantity}
+                onChange={(e) => handleProductChange(index, 'quantity', e.target.value)}
+                required
+              />
+
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                value={product.unit_price}
+                onChange={(e) => handleProductChange(index, 'unit_price', e.target.value)}
+                required
+              />
+
+              <span>${(product.quantity * product.unit_price)}</span>
+
+              <button 
+                type="button" 
+                onClick={() => removeProduct(index)}
+                className="btn btn-sm btn-danger"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+
+          <div className="totals-row">
+            <strong>Total Quantity: {calculateTotalQuantity()}</strong>
+            <strong>Total Amount: ${calculateTotal()}</strong>
           </div>
         </div>
 

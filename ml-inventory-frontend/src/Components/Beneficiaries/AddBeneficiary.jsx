@@ -133,20 +133,6 @@ const AddBeneficiary = () => {
               maxLength="20"
             />
           </div>
-
-          <div className="form-group">
-            <label>Gender*</label>
-            <select
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              required
-            >
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
         </div>
 
         <div className="form-group">

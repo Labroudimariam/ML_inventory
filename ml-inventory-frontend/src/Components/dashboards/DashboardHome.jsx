@@ -11,6 +11,7 @@ import {
 } from "react-icons/fa";
 import "./dashboardHome.css";
 import LoadingSpinner from "../loading/Loading";
+import DeliveriesMap from "../deliveries/DeliveriesMap";
 
 const DashboardHome = () => {
   const [stats, setStats] = useState(null);
@@ -95,8 +96,9 @@ const DashboardHome = () => {
 
   return (
     <div className="dashboard-container">
+      {/* Stats Cards */}
       <div className="stats-container">
-        {/* Beneficiaries Card */}
+        {/* Beneficiaries */}
         <div className="stat-card">
           <h3 className="stat-title top-title">Total Beneficiaries</h3>
           <div className="stat-middle">
@@ -115,7 +117,7 @@ const DashboardHome = () => {
           </div>
         </div>
 
-        {/* Orders Card */}
+        {/* Orders */}
         <div className="stat-card">
           <h3 className="stat-title top-title">Total Orders</h3>
           <div className="stat-middle">
@@ -134,7 +136,7 @@ const DashboardHome = () => {
           </div>
         </div>
 
-        {/* Products Card */}
+        {/* Products */}
         <div className="stat-card">
           <h3 className="stat-title top-title">Total Products</h3>
           <div className="stat-middle">
@@ -153,7 +155,7 @@ const DashboardHome = () => {
           </div>
         </div>
 
-        {/* Categories Card */}
+        {/* Categories */}
         <div className="stat-card">
           <h3 className="stat-title top-title">Total Categories</h3>
           <div className="stat-middle">
@@ -171,6 +173,12 @@ const DashboardHome = () => {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Deliveries Map */}
+      <div className="map-section">
+        <h2 className="map-title">Distributions Map</h2>
+        <DeliveriesMap />
       </div>
     </div>
   );

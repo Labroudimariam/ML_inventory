@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Inventory;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
@@ -33,33 +35,43 @@ class ProductController extends Controller
             'barcode' => 'nullable|string|unique:products,barcode',
         ]);
 
-        // Handle image upload
-        if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('products', 'public');
+        DB::beginTransaction();
+
+        try {
+            // Handle image upload
+            if ($request->hasFile('image')) {
+                $validated['image'] = $request->file('image')->store('products', 'public');
+            }
+
+            // Auto-set status based on quantity and threshold
+            $validated['status'] = $this->calculateStockStatus(
+                $validated['quantity'],
+                $validated['threshold_value'] ?? null
+            );
+
+            $product = Product::create($validated);
+
+            // Update warehouse stock
+            $this->updateWarehouseStock($validated['warehouse_id']);
+
+            DB::commit();
+
+            return response()->json($product->load(['category', 'warehouse']), Response::HTTP_CREATED);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Product creation failed',
+                'error' => $e->getMessage()
+            ], 400);
         }
-
-        // Auto-set status based on quantity and threshold
-        if ($validated['quantity'] <= 0) {
-            $validated['status'] = 'out-of-stock';
-        } elseif (isset($validated['threshold_value']) && $validated['quantity'] <= $validated['threshold_value']) {
-            $validated['status'] = 'low-stock';
-        } else {
-            $validated['status'] = 'in-stock';
-        }
-
-        $product = Product::create($validated);
-        
-        // Update warehouse stock
-        $warehouse = Warehouse::find($validated['warehouse_id']);
-        $warehouse->current_stock = $warehouse->products()->sum('quantity');
-        $warehouse->save();
-
-        return response()->json($product->load(['category', 'warehouse']), Response::HTTP_CREATED);
     }
 
     public function show($id)
     {
-        return Product::with(['category', 'warehouse'])->findOrFail($id);
+        $product = Product::with(['category', 'warehouse'])->findOrFail($id);
+        $product->append(['stock', 'image_url']);
+        return response()->json($product);
     }
 
     public function update(Request $request, $id)
@@ -77,67 +89,78 @@ class ProductController extends Controller
             'expiry_date' => 'nullable|date|after:today',
             'description' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
-            'barcode' => 'nullable|string|unique:products,barcode,'.$id,
+            'barcode' => 'nullable|string|unique:products,barcode,' . $id,
         ]);
 
-        // Handle image update
-        if ($request->hasFile('image')) {
-            // Delete old image if exists
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
-            }
-            $validated['image'] = $request->file('image')->store('products', 'public');
-        }
+        DB::beginTransaction();
 
-        // Auto-update status based on quantity and threshold
-        if (isset($validated['quantity'])) {
-            $threshold = $validated['threshold_value'] ?? $product->threshold_value;
-            
-            if ($validated['quantity'] <= 0) {
-                $validated['status'] = 'out-of-stock';
-            } elseif ($threshold && $validated['quantity'] <= $threshold) {
-                $validated['status'] = 'low-stock';
-            } else {
-                $validated['status'] = 'in-stock';
+        try {
+            // Handle image update
+            if ($request->hasFile('image')) {
+                if ($product->image) {
+                    Storage::disk('public')->delete($product->image);
+                }
+                $validated['image'] = $request->file('image')->store('products', 'public');
             }
-        }
 
-        $product->update($validated);
-        
-        // Update warehouse stock if quantity or warehouse changed
-        if ($request->has('quantity') || $request->has('warehouse_id')) {
-            $warehouseIds = array_unique([$product->warehouse_id, $request->warehouse_id ?? null]);
-            
-            foreach ($warehouseIds as $warehouseId) {
-                if ($warehouseId) {
-                    $warehouse = Warehouse::find($warehouseId);
-                    $warehouse->current_stock = $warehouse->products()->sum('quantity');
-                    $warehouse->save();
+            // Auto-update status based on quantity and threshold
+            if (isset($validated['quantity'])) {
+                $threshold = $validated['threshold_value'] ?? $product->threshold_value;
+                $validated['status'] = $this->calculateStockStatus($validated['quantity'], $threshold);
+            }
+
+            // If warehouse changes, update both warehouses' stock
+            $oldWarehouseId = $product->warehouse_id;
+            $product->update($validated);
+
+            if ($request->has('warehouse_id') || $request->has('quantity')) {
+                $this->updateWarehouseStock($oldWarehouseId);
+                if ($request->has('warehouse_id')) {
+                    $this->updateWarehouseStock($validated['warehouse_id']);
                 }
             }
-        }
 
-        return response()->json($product->load(['category', 'warehouse']));
+            DB::commit();
+            return response()->json($product->load(['category', 'warehouse']));
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Product update failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
     }
 
     public function destroy($id)
     {
-        $product = Product::findOrFail($id);
-        
-        // Delete associated image
-        if ($product->image) {
-            Storage::disk('public')->delete($product->image);
-        }
-        
-        $warehouseId = $product->warehouse_id;
-        $product->delete();
-        
-        // Update warehouse stock
-        $warehouse = Warehouse::find($warehouseId);
-        $warehouse->current_stock = $warehouse->products()->sum('quantity');
-        $warehouse->save();
+        DB::beginTransaction();
 
-        return response()->json(null, Response::HTTP_NO_CONTENT);
+        try {
+            $product = Product::findOrFail($id);
+
+            // Delete associated image
+            if ($product->image) {
+                Storage::disk('public')->delete($product->image);
+            }
+
+            $warehouseId = $product->warehouse_id;
+            $product->delete();
+
+            // Update warehouse stock
+            $this->updateWarehouseStock($warehouseId);
+
+            DB::commit();
+
+            return response()->json(null, Response::HTTP_NO_CONTENT);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Product deletion failed',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     public function search(Request $request)
@@ -145,7 +168,7 @@ class ProductController extends Controller
         $query = Product::query()->with(['category', 'warehouse']);
 
         if ($request->has('name')) {
-            $query->where('name', 'like', '%'.$request->name.'%');
+            $query->where('name', 'like', '%' . $request->name . '%');
         }
 
         if ($request->has('category_id')) {
@@ -181,5 +204,71 @@ class ProductController extends Controller
             'is_low' => $product->status === 'low-stock',
             'is_out' => $product->status === 'out-of-stock'
         ]);
+    }
+
+    public function syncStock($id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $product = Product::findOrFail($id);
+            
+            // Calculate real stock from inventory movements
+            $totalIn = Inventory::where('product_id', $id)
+                ->where('movement_type', 'in')
+                ->sum('quantity');
+            
+            $totalOut = Inventory::where('product_id', $id)
+                ->where('movement_type', 'out')
+                ->sum('quantity');
+            
+            $realStock = $totalIn - $totalOut;
+            
+            // Update product only if necessary
+            if ($product->quantity != $realStock) {
+                $product->quantity = $realStock;
+                $product->status = $this->calculateStockStatus($realStock, $product->threshold_value);
+                $product->save();
+
+                // Update warehouse stock
+                $this->updateWarehouseStock($product->warehouse_id);
+            }
+            
+            DB::commit();
+
+            return response()->json([
+                'previous_stock' => $product->quantity,
+                'new_stock' => $realStock,
+                'status' => $product->status
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Stock synchronization failed',
+                'error' => $e->getMessage()
+            ], 400);
+        }
+    }
+
+    protected function calculateStockStatus($quantity, $threshold = null)
+    {
+        if ($quantity <= 0) {
+            return 'out-of-stock';
+        } elseif ($threshold && $quantity <= $threshold) {
+            return 'low-stock';
+        }
+        return 'in-stock';
+    }
+
+    protected function updateWarehouseStock($warehouseId)
+    {
+        if ($warehouseId) {
+            $warehouse = Warehouse::find($warehouseId);
+            if ($warehouse) {
+                $warehouse->current_stock = $warehouse->products()->sum('quantity');
+                $warehouse->save();
+            }
+        }
     }
 }

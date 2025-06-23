@@ -28,12 +28,7 @@ import EditUser from "./Components/users/EditUser";
 import OrderList from "./Components/orders/OrderList";
 import AddOrder from "./Components/orders/AddOrder";
 import EditOrder from "./Components/orders/EditOrder";
-import OrderItemList from "./Components/orderitems/OrderItemList";
-import AddOrderItem from "./Components/orderitems/AddOrderItem";
-import EditOrderItem from "./Components/orderitems/EditOrderItem";
 import InventoryList from "./Components/inventories/InventoryList";
-import AddInventory from "./Components/inventories/AddInventory";
-import EditInventory from "./Components/inventories/EditInventory";
 import ReportList from "./Components/reports/ReportList";
 import AddReport from "./Components/reports/AddReport";
 import EditReport from "./Components/reports/EditReport";
@@ -108,15 +103,8 @@ function App() {
           <Route path="orders/edit/:id" element={<EditOrder />} />
           <Route path="orders/details/:id" element={<DetailsOrder />} />
 
-          {/* Order items routes */}
-          <Route path="order-items/list" element={<OrderItemList />} />
-          <Route path="order-items/add" element={<AddOrderItem />} />
-          <Route path="order-items/edit/:id" element={<EditOrderItem />} />
-
           {/* Inventory routes */}
           <Route path="inventory/list" element={<InventoryList />} />
-          <Route path="inventory/add" element={<AddInventory />} />
-          <Route path="inventory/edit/:id" element={<EditInventory />} />
 
           {/* Reports routes */}
           <Route path="reports/list" element={<ReportList />} />
@@ -162,15 +150,8 @@ function App() {
           <Route path="orders/add" element={<AddOrder />} />
           <Route path="orders/edit/:id" element={<EditOrder />} />
 
-          {/* Order items routes */}
-          <Route path="order-items/list" element={<OrderItemList />} />
-          <Route path="order-items/add" element={<AddOrderItem />} />
-          <Route path="order-items/edit/:id" element={<EditOrderItem />} />
-
           {/* Inventory routes */}
           <Route path="inventory/list" element={<InventoryList />} />
-          <Route path="inventory/add" element={<AddInventory />} />
-          <Route path="inventory/edit/:id" element={<EditInventory />} />
 
           {/* Reports routes */}
           <Route path="reports/list" element={<ReportList />} />
@@ -201,8 +182,6 @@ function App() {
 
           {/* Inventory routes */}
           <Route path="inventory/list" element={<InventoryList />} />
-          <Route path="inventory/add" element={<AddInventory />} />
-          <Route path="inventory/edit/:id" element={<EditInventory />} />
 
           {/* Reports routes */}
           <Route path="reports/list" element={<ReportList />} />

@@ -23,7 +23,6 @@ const DetailsOrder = () => {
       return;
     }
 
-    // Set base path based on user role
     switch (user.role.toLowerCase()) {
       case "admin":
         setBasePath("/admin-dashboard");
@@ -118,6 +117,12 @@ const DetailsOrder = () => {
               <span className="detail-label">Total Quantity:</span>
               <span className="detail-value">{order.total_quantity}</span>
             </div>
+            <div className="detail-item">
+              <span className="detail-label">Total Amount:</span>
+              <span className="detail-value">
+                ${order.total_amount|| '0.00'}
+              </span>
+            </div>
           </div>
         </div>
 
@@ -139,6 +144,30 @@ const DetailsOrder = () => {
           </div>
         </div>
 
+        <div className="details-section">
+          <h3>Products</h3>
+          <table className="products-table">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Unit Price</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {order.products?.map((product) => (
+                <tr key={product.id}>
+                  <td>{product.name}</td>
+                  <td>{product.pivot.quantity}</td>
+                  <td>${product.pivot.unit_price}</td>
+                  <td>${(product.pivot.quantity * product.pivot.unit_price)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
         {order.notes && (
           <div className="details-section">
             <h3>Additional Notes</h3>
@@ -147,14 +176,13 @@ const DetailsOrder = () => {
         )}
 
         <div className="details-actions">
-
           <Link
             to={`${basePath}/orders/edit/${order.id}`}
             className="btn btn-primary"
           >
             Edit Order
           </Link>
-                    <button
+          <button
             onClick={() => navigate(`${basePath}/orders/list`)}
             className="btn btn-secondary"
           >
